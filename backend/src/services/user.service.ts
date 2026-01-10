@@ -1,21 +1,24 @@
 import { prismaClient } from "../../prisma/prisma";
 import { CreateUserInput, UpdateUserInput } from "../dtos/input/user.input";
+import { hashPassword } from "../utils/hash";
 
 export class UserService {
     async createUser(data: CreateUserInput) {
-        const findedUser = await prismaClient.user.findUnique({
+        const existingUser = await prismaClient.user.findUnique({
             where: {
                 email: data.email
             }
         });
 
-        if (findedUser) throw new Error('Usuário já cadastrado!');
+        if (existingUser) throw new Error('E-mail já cadastrado!');
+
+        const hash = await hashPassword(data.password);
 
         return prismaClient.user.create({
             data: {
                 fullName: data.fullName,
                 email: data.email,
-                password: data.password
+                password: hash
             }
         });
     }

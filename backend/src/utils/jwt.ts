@@ -1,7 +1,7 @@
 import jwt, { Secret, SignOptions } from "jsonwebtoken"
 
 export type JwtPayload = {
-    id: string
+    fullName: string
     email: string
 }
 

@@ -3,6 +3,12 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type AuthOutput {
+  refreshToken: String!
+  token: String!
+  user: UserModel!
+}
+
 input CreateUserInput {
   email: String!
   fullName: String!
@@ -14,9 +20,16 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTimeISO
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createUser(data: CreateUserInput!): UserModel!
   deleteUser(email: String!): Boolean!
+  login(data: LoginInput!): AuthOutput!
+  register(data: CreateUserInput!): AuthOutput!
   updateUser(data: UpdateUserInput!, email: String!): UserModel!
 }
 
