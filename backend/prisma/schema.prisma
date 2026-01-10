@@ -2,18 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "./generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-enum TransactionType {
-  INCOME
-  EXPENSE
 }
 
 model User {
@@ -28,13 +22,13 @@ model User {
 }
 
 model Transaction {
-  id          String          @id @default(uuid())
-  type        TransactionType
+  id          String   @id @default(uuid())
+  type        String
   description String
   date        DateTime
   value       Float
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   categoryId String   @default("")
   category   Category @relation(fields: [categoryId], references: [id], onDelete: SetDefault)
