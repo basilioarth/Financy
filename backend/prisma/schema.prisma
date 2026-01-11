@@ -38,13 +38,13 @@ model Transaction {
 }
 
 model Category {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  icon        String
-  color       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  iconName     String
+  colorHexCode String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   transactions Transaction[]
 }

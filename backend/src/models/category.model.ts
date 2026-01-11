@@ -2,18 +2,21 @@ import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql";
 import { TransactionModel } from "./transaction.model";
 
 @ObjectType()
-export class UserModel {
+export class CategoryModel {
     @Field(() => ID)
     id!: string
 
     @Field(() => String)
-    fullName!: string
+    title!: string
 
     @Field(() => String)
-    email!: string
+    description?: string
 
     @Field(() => String)
-    password!: string
+    iconName!: string
+
+    @Field(() => String)
+    colorHexCode!: string
 
     @Field(() => GraphQLISODateTime)
     createdAt!: Date
