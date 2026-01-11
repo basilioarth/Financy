@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   transactions Transaction[]
+  categories   Category[]
 }
 
 model Transaction {
@@ -40,11 +41,15 @@ model Transaction {
 model Category {
   id           String   @id @default(uuid())
   title        String
+  code         String   @unique
   description  String?
   iconName     String
   colorHexCode String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   transactions Transaction[]
 }

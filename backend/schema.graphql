@@ -3,16 +3,36 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AuthInput {
+  email: String!
+  password: String!
+}
+
 type AuthOutput {
   refreshToken: String!
   token: String!
   user: UserModel!
 }
 
-input CreateUserInput {
-  email: String!
-  fullName: String!
-  password: String!
+input CategoryInput {
+  colorHexCode: String!
+  description: String!
+  iconName: String!
+  title: String!
+}
+
+type CategoryModel {
+  author: UserModel
+  authorId: String!
+  code: String!
+  colorHexCode: String!
+  createdAt: DateTimeISO!
+  description: String!
+  iconName: String!
+  id: ID!
+  title: String!
+  transactions: [TransactionModel!]
+  updatedAt: DateTimeISO!
 }
 
 """
@@ -20,26 +40,46 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTimeISO
 
-input LoginInput {
-  email: String!
-  password: String!
-}
-
 type Mutation {
-  createUser(data: CreateUserInput!): UserModel!
+  createCategory(data: CategoryInput!): CategoryModel!
+  createUser(data: UserInput!): UserModel!
+  deleteCategory(code: String!): Boolean!
   deleteUser(email: String!): Boolean!
-  login(data: LoginInput!): AuthOutput!
-  register(data: CreateUserInput!): AuthOutput!
+  login(data: AuthInput!): AuthOutput!
+  register(data: UserInput!): AuthOutput!
+  updateCategory(code: String!, data: CategoryInput!): CategoryModel!
   updateUser(data: UpdateUserInput!, email: String!): UserModel!
 }
 
 type Query {
+  getCategory(code: String!): CategoryModel!
   getUser(email: String!): UserModel!
+  listCategories: [CategoryModel!]!
   listUsers: [UserModel!]!
+}
+
+type TransactionModel {
+  author: UserModel
+  authorId: String!
+  category: CategoryModel
+  categoryId: String!
+  createdAt: DateTimeISO!
+  date: DateTimeISO!
+  description: String!
+  id: ID!
+  type: String!
+  updatedAt: DateTimeISO!
+  value: Float!
 }
 
 input UpdateUserInput {
   fullName: String!
+}
+
+input UserInput {
+  email: String!
+  fullName: String!
+  password: String!
 }
 
 type UserModel {
@@ -48,5 +88,6 @@ type UserModel {
   fullName: String!
   id: ID!
   password: String!
+  transactions: [TransactionModel!]
   updatedAt: DateTimeISO!
 }

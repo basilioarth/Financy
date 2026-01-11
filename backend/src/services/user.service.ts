@@ -39,6 +39,18 @@ export class UserService {
         return user;
     }
 
+    async findUserById(id: string) {
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        if (!user) throw new Error('Usuário não cadastrado!');
+
+        return user;
+    }
+
     async updateUserByEmail(email: string, data: UpdateUserInput) {
         const user = await prismaClient.user.findUnique({
             where: {
@@ -59,13 +71,13 @@ export class UserService {
     }
 
     async deleteUserByEmail(email: string) {
-        const findUser = await prismaClient.user.findUnique({
+        const foundUser = await prismaClient.user.findUnique({
             where: {
                 email: email
             }
         });
 
-        if (!findUser) throw new Error('Usuário não cadastrado!');
+        if (!foundUser) throw new Error('Usuário não cadastrado!');
 
         return prismaClient.user.delete({
             where: {
