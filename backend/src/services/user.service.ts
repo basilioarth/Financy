@@ -1,9 +1,9 @@
 import { prismaClient } from "../../prisma/prisma";
-import { CreateUserInput, UpdateUserInput } from "../dtos/input/user.input";
+import { UserInput, UpdateUserInput } from "../dtos/user.dto";
 import { hashPassword } from "../utils/hash";
 
 export class UserService {
-    async createUser(data: CreateUserInput) {
+    async createUser(data: UserInput) {
         const existingUser = await prismaClient.user.findUnique({
             where: {
                 email: data.email

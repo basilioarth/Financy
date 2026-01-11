@@ -21,7 +21,7 @@ export const buildContext = async ({
 
         try {
             const payload = verifyJwt(token) as JwtPayload;
-            user = payload.id;
+            user = payload.email;
         } catch (error) { }
     }
 
