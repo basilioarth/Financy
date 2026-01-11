@@ -2,6 +2,7 @@ import { prismaClient } from "../../prisma/prisma";
 import { CategoryInput } from "../dtos/category.dto";
 
 export class CategoryService {
+
     generateCategoryCode(title: string) {
         return title
             .toLowerCase()                                   // Converte para minúsculo

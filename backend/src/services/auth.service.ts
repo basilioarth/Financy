@@ -7,6 +7,7 @@ import { UserInput } from "../dtos/user.dto";
 import { UserService } from "./user.service";
 
 export class AuthService {
+
     private userService = new UserService();
 
     async login(data: AuthInput) {

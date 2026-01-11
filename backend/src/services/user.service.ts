@@ -3,6 +3,7 @@ import { UserInput, UpdateUserInput } from "../dtos/user.dto";
 import { hashPassword } from "../utils/hash";
 
 export class UserService {
+
     async createUser(data: UserInput) {
         const existingUser = await prismaClient.user.findUnique({
             where: {
