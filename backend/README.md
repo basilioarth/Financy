@@ -1,9 +1,9 @@
 - [X]  O usuário pode criar uma conta e fazer login
-- [ ]  O usuário pode ver e gerenciar apenas as transações e categorias criadas por ele
-- [ ]  Deve ser possível criar uma transação
-- [ ]  Deve ser possível deletar uma transação
-- [ ]  Deve ser possível editar uma transação
-- [ ]  Deve ser possível listar todas as transações
+- [x]  O usuário pode ver e gerenciar apenas as transações e categorias criadas por ele
+- [X]  Deve ser possível criar uma transação
+- [X]  Deve ser possível deletar uma transação
+- [X]  Deve ser possível editar uma transação
+- [X]  Deve ser possível listar todas as transações
 - [X]  Deve ser possível criar uma categoria
 - [X]  Deve ser possível deletar uma categoria
 - [X]  Deve ser possível editar uma categoria

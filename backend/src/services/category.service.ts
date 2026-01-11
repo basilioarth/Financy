@@ -56,6 +56,19 @@ export class CategoryService {
         return category;
     }
 
+    async findCategoryById(id: string, authenticatedUserId: string) {
+        const category = await prismaClient.category.findUnique({
+            where: {
+                id: id,
+                authorId: authenticatedUserId
+            }
+        });
+
+        if (!category) throw new Error('Categoria não cadastrada!');
+
+        return category;
+    }
+
     async updateCategoryByCode(categoryCode: string, data: CategoryInput, authenticatedUserId: string) {
         const newCategoryCode = this.generateCategoryCode(data.title);
 

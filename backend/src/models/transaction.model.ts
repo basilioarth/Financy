@@ -26,7 +26,7 @@ export class TransactionModel {
     updatedAt!: Date
 
     @Field(() => String)
-    categoryId!: String
+    categoryId!: string
 
     @Field(() => CategoryModel, { nullable: true })
     category?: CategoryModel
