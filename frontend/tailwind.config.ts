@@ -17,7 +17,7 @@ export default {
 		},
 		extend: {
 			colors: {
-				brad: {
+				brand: {
 					dark: '#124B2B',
 					base: '#1F6F43'
 				},
