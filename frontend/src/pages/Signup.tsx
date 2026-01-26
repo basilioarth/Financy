@@ -1,22 +1,19 @@
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { User, Mail, Lock, LogIn, EyeClosed, Eye } from "lucide-react"
+import { FieldGroup } from "@/components/ui/field"
+import { User, Mail, Lock, LogIn } from "lucide-react"
 import { useState } from "react"
+import { FormField } from "@/components/FormField"
+import { validateName, validateEmail, validatePassword } from "@/components/FormField/utils"
 
 export function Signup() {
     const [showPassword, setShowPassword] = useState(false);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: ""
     });
+
     const [formDataErros, setFormDataErros] = useState({
         name: "",
         email: "",
@@ -28,27 +25,8 @@ export function Signup() {
     }
 
     const thereIsAnyError = () => {
-        return formDataErros.email != "" || formDataErros.password != ""
+        return formDataErros.name != "" || formDataErros.email != "" || formDataErros.password != ""
     }
-
-    const validateName = (name: string) => {
-        if (!name) return "Nome é obrigatório";
-        if (name.length < 3) return "Nome deve ter no mínimo 3 caracteres";
-        return "";
-    };
-
-    const validateEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email) return "E-mail é obrigatório";
-        if (!emailRegex.test(email)) return "E-mail inválido";
-        return "";
-    };
-
-    const validatePassword = (password: string) => {
-        if (!password) return "Senha é obrigatória";
-        if (password.length < 8) return "A senha deve ter no mínimo 8 caracteres";
-        return "";
-    };
 
     const handleChange = (field: string, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -69,7 +47,9 @@ export function Signup() {
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
-        console.log("Submit");
+        console.log(formData.name);
+        console.log(formData.email);
+        console.log(formData.password);
     }
 
     return (
@@ -88,57 +68,38 @@ export function Signup() {
                 </div>
 
                 <FieldGroup className="gap-4">
-                    <Field className="gap-2 group">
-                        <FieldLabel className={cn("text-sm leading-5 text-gray-700 group-focus-within:text-brand-base", formDataErros.name != "" ? "text-danger" : "")}>Nome completo</FieldLabel>
-                        <div className="relative">
-                            <User className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-brand-base", formDataErros.name != "" ? "text-danger" : "")} />
-                            <Input
-                                type="text"
-                                placeholder="Seu nome completo"
-                                value={formData.name}
-                                onChange={(e) => handleChange("name", e.target.value)}
-                            />
-                        </div>
-                    </Field>
+                    <FormField
+                        type="text"
+                        label="Nome completo"
+                        placeholder="Seu nome completo"
+                        value={formData.name}
+                        onChangeValue={(value) => handleChange("name", value)}
+                        icon={User}
+                        error={formDataErros.name}
+                    />
 
-                    <Field className="gap-2 group">
-                        <FieldLabel className={cn("text-sm leading-5 text-gray-700 group-focus-within:text-brand-base", formDataErros.email != "" ? "text-danger" : "")}>E-mail</FieldLabel>
-                        <div className="relative">
-                            <Mail className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-brand-base", formDataErros.email != "" ? "text-danger" : "")} />
-                            <Input
-                                type="email"
-                                placeholder="mail@exemplo.com"
-                                value={formData.email}
-                                onChange={(e) => handleChange("email", e.target.value)}
-                            />
-                        </div>
-                    </Field>
+                    <FormField
+                        type="email"
+                        label="E-mail"
+                        placeholder="mail@example.com"
+                        value={formData.email}
+                        onChangeValue={(value) => handleChange("email", value)}
+                        icon={Mail}
+                        error={formDataErros.email}
+                    />
 
-                    <Field className="gap-2 group">
-                        <FieldLabel className={cn("text-sm leading-5 text-gray-700 group-focus-within:text-brand-base", formDataErros.password != "" ? "text-danger" : "")}>Senha</FieldLabel>
-                        <div className="relative">
-                            <Lock className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-brand-base", formDataErros.password != "" ? "text-danger" : "")} />
-                            <Input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Digite sua senha"
-                                value={formData.password}
-                                onChange={(e) => handleChange("password", e.target.value)}
-                                className="pr-10"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700"
-                            >
-                                {showPassword ? (
-                                    <Eye className="h-4 w-4" />
-                                ) : (
-                                    <EyeClosed className="h-4 w-4" />
-                                )}
-                            </button>
-                        </div>
-                        <FieldDescription className="text-xs leading-4 text-gray-500">A senha deve ter no mínimo 8 caracteres</FieldDescription>
-                    </Field>
+                    <FormField
+                        type={showPassword ? "text" : "password"}
+                        label="Senha"
+                        placeholder="Digite sua senha"
+                        value={formData.password}
+                        description="A senha deve ter no mínimo 8 caracteres"
+                        onChangeValue={(value) => handleChange("password", value)}
+                        icon={Lock}
+                        error={formDataErros.password}
+                        hidden={showPassword}
+                        onChangeVisibility={(value) => setShowPassword(value)}
+                    />
                 </FieldGroup>
 
                 <div className="flex flex-col justify-center items-center gap-6">
