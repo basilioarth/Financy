@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Layout } from "@/components/Layout"
-// import { Login } from "./pages/Auth/Login"
+import { Login } from "@/pages/Login"
 import { Signup } from "@/pages/Signup"
 import { useAuthStore } from "./stores/auth"
 
@@ -22,7 +22,7 @@ function App() {
           path="/login"
           element={
             <PublicRoute>
-              <Signup />
+              <Login />
             </PublicRoute>
           }
         />
