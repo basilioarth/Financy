@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button"
-import { FieldGroup } from "@/components/ui/field"
 import { User, Mail, Lock, LogIn } from "lucide-react"
 import { useState } from "react"
+import { FormLayout } from "@/components/FormLayout"
 import { FormField } from "@/components/FormField"
 import { validateName, validateEmail, validatePassword } from "@/components/FormField/utils"
 
@@ -53,77 +52,48 @@ export function Signup() {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center gap-8">
-            <img
-                src="/logo.svg"
-                alt="Logo do Financy"
-                className="w-auto h-8"
+        <FormLayout
+            title="Criar conta"
+            description="Comece a controlar suas finanças ainda hoje"
+            submitButtonLabel="Cadastrar"
+            disableSubmitButton={!isFormFullFilled() || thereIsAnyError()}
+            onSubmit={(e) => handleSubmit(e)}
+            alternativeFlowLabel="Já tem uma conta?"
+            icon={LogIn}
+            navigateButtonLabel="Fazer login"
+        >
+            <FormField
+                type="text"
+                label="Nome completo"
+                placeholder="Seu nome completo"
+                value={formData.name}
+                onChangeValue={(value) => handleChange("name", value)}
+                icon={User}
+                error={formDataErros.name}
             />
-            <div
-                className="w-112 h-fit flex flex-col px-8 py-8 justify-center align-center bg-white border border-gray-200 rounded-xl gap-8"
-            >
-                <div className="flex flex-col justify-center items-center gap-1">
-                    <strong className="text-xl leading-7 text-gray-800">Criar conta</strong>
-                    <span className="leading-6 text-gray-600">Comece a controlar suas finanças ainda hoje</span>
-                </div>
 
-                <FieldGroup className="gap-4">
-                    <FormField
-                        type="text"
-                        label="Nome completo"
-                        placeholder="Seu nome completo"
-                        value={formData.name}
-                        onChangeValue={(value) => handleChange("name", value)}
-                        icon={User}
-                        error={formDataErros.name}
-                    />
+            <FormField
+                type="email"
+                label="E-mail"
+                placeholder="mail@example.com"
+                value={formData.email}
+                onChangeValue={(value) => handleChange("email", value)}
+                icon={Mail}
+                error={formDataErros.email}
+            />
 
-                    <FormField
-                        type="email"
-                        label="E-mail"
-                        placeholder="mail@example.com"
-                        value={formData.email}
-                        onChangeValue={(value) => handleChange("email", value)}
-                        icon={Mail}
-                        error={formDataErros.email}
-                    />
-
-                    <FormField
-                        type={showPassword ? "text" : "password"}
-                        label="Senha"
-                        placeholder="Digite sua senha"
-                        value={formData.password}
-                        description="A senha deve ter no mínimo 8 caracteres"
-                        onChangeValue={(value) => handleChange("password", value)}
-                        icon={Lock}
-                        error={formDataErros.password}
-                        hidden={showPassword}
-                        onChangeVisibility={(value) => setShowPassword(value)}
-                    />
-                </FieldGroup>
-
-                <div className="flex flex-col justify-center items-center gap-6">
-                    <Button
-                        disabled={!isFormFullFilled() || thereIsAnyError()}
-                        onClick={(e) => handleSubmit(e)}
-                    >
-                        Cadastrar
-                    </Button>
-
-                    <div className="w-full flex items-center gap-3 py-2 px-0">
-                        <div className="flex-1 border-t border-gray-300"></div>
-                        <span className="text-sm leading-5 text-gray-500">ou</span>
-                        <div className="flex-1 border-t border-gray-300"></div>
-                    </div>
-
-                    <div className="flex flex-col justify-center items-center gap-4 w-full">
-                        <span>Já tem uma conta?</span>
-                        <Button variant="labelButtonSecondary">
-                            <LogIn /> Fazer login
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <FormField
+                type={showPassword ? "text" : "password"}
+                label="Senha"
+                placeholder="Digite sua senha"
+                value={formData.password}
+                description="A senha deve ter no mínimo 8 caracteres"
+                onChangeValue={(value) => handleChange("password", value)}
+                icon={Lock}
+                error={formDataErros.password}
+                hidden={showPassword}
+                onChangeVisibility={(value) => setShowPassword(value)}
+            />
+        </FormLayout>
     )
 }
