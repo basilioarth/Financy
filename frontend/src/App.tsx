@@ -27,7 +27,7 @@ function App() {
           }
         />
         <Route
-          path="/"
+          path="/signup"
           element={
             <PublicRoute>
               <Signup />

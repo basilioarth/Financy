@@ -6,6 +6,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { LucideIcon, EyeClosed, Eye } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 interface FormField {
     type: string
@@ -13,6 +15,7 @@ interface FormField {
     placeholder: string
     value: string
     description?: string,
+    action?: boolean,
     onChangeValue: (value: string) => void
     icon: LucideIcon
     error: string
@@ -26,6 +29,7 @@ export function FormField({
     placeholder,
     value,
     description,
+    action,
     onChangeValue,
     icon: Icon,
     error,
@@ -73,6 +77,16 @@ export function FormField({
                 }
             </div>
             {description && <FieldDescription className="text-xs leading-4 text-gray-500">{description}</FieldDescription>}
-        </Field>
+            {action && (
+                <div className="flex w-full items-center justify-between text-sm mt-4">
+                    <div className="flex gap-2">
+                        <Checkbox />
+                        <span className="text-gray-700">Lembrar-me</span>
+                    </div>
+                    <Button variant="link" size="link">Recuperar senha</Button>
+                </div>
+            )
+            }
+        </Field >
     )
 }

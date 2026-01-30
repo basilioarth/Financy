@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react"
 import { Button } from "../ui/button"
 import { FieldGroup } from "../ui/field"
+import { Link } from "react-router-dom"
 
 interface FormLayoutProps {
     title: string
@@ -8,10 +9,12 @@ interface FormLayoutProps {
     children: React.ReactNode
     submitButtonLabel: string
     disableSubmitButton: boolean
+    submitButtonTo: string
     onSubmit: (e: any) => void
     alternativeFlowLabel: string
     icon: LucideIcon
     navigateButtonLabel: string
+    navigateButtonTo: string
 }
 
 export function FormLayout({
@@ -20,10 +23,12 @@ export function FormLayout({
     children,
     submitButtonLabel,
     disableSubmitButton,
+    submitButtonTo,
     onSubmit,
     alternativeFlowLabel,
     icon: Icon,
-    navigateButtonLabel
+    navigateButtonLabel,
+    navigateButtonTo
 }: FormLayoutProps) {
     return (
         <div className="flex flex-col justify-center items-center gap-8">
@@ -60,8 +65,10 @@ export function FormLayout({
 
                     <div className="flex flex-col justify-center items-center gap-4 w-full">
                         <span>{alternativeFlowLabel}</span>
-                        <Button variant="labelButtonSecondary">
-                            <Icon /> {navigateButtonLabel}
+                        <Button variant="labelButtonSecondary" asChild>
+                            <Link to={navigateButtonTo}>
+                                <Icon /> {navigateButtonLabel}
+                            </Link>
                         </Button>
                     </div>
                 </div>

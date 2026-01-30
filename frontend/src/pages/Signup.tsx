@@ -57,10 +57,12 @@ export function Signup() {
             description="Comece a controlar suas finanças ainda hoje"
             submitButtonLabel="Cadastrar"
             disableSubmitButton={!isFormFullFilled() || thereIsAnyError()}
+            submitButtonTo="/"
             onSubmit={(e) => handleSubmit(e)}
             alternativeFlowLabel="Já tem uma conta?"
             icon={LogIn}
             navigateButtonLabel="Fazer login"
+            navigateButtonTo="/login"
         >
             <FormField
                 type="text"

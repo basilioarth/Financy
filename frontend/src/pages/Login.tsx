@@ -25,10 +25,12 @@ export function Login() {
             description="Entre em sua conta para continuar"
             submitButtonLabel="Entrar"
             disableSubmitButton={false}
+            submitButtonTo="/"
             onSubmit={(e) => handleSubmit(e)}
             alternativeFlowLabel="Ainda não tem uma conta?"
             icon={UserRoundPlus}
             navigateButtonLabel="Criar conta"
+            navigateButtonTo="/signup"
         >
             <FormField
                 type="email"
@@ -44,6 +46,7 @@ export function Login() {
                 type={showPassword ? "text" : "password"}
                 label="Senha"
                 placeholder="Digite sua senha"
+                action={true}
                 value={formData.password}
                 onChangeValue={(value) => handleChange("password", value)}
                 icon={Lock}
