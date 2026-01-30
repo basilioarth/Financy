@@ -9,7 +9,6 @@ interface FormLayoutProps {
     children: React.ReactNode
     submitButtonLabel: string
     disableSubmitButton: boolean
-    submitButtonTo: string
     onSubmit: (e: any) => void
     alternativeFlowLabel: string
     icon: LucideIcon
@@ -23,7 +22,6 @@ export function FormLayout({
     children,
     submitButtonLabel,
     disableSubmitButton,
-    submitButtonTo,
     onSubmit,
     alternativeFlowLabel,
     icon: Icon,

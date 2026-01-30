@@ -2,17 +2,37 @@ import { FormLayout } from "@/components/FormLayout"
 import { FormField } from "@/components/FormField"
 import { UserRoundPlus, Mail, Lock } from "lucide-react"
 import { useState } from "react";
+import { useAuthStore } from "@/stores/auth";
+import { toast } from "sonner"
 
 export function Login() {
     const [showPassword, setShowPassword] = useState(false);
-
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     });
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: any) => {
-        console.log("Login");
+    const login = useAuthStore((state) => state.login)
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setLoading(true)
+
+        try {
+            const loginMutate = await login({
+                email: formData.email,
+                password: formData.password,
+            })
+
+            if (loginMutate) {
+                toast.success("Login realizado com sucesso!")
+            }
+        } catch (error) {
+            toast.success("Falha ao realizar o login!")
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleChange = (field: string, value: string) => {
@@ -25,7 +45,6 @@ export function Login() {
             description="Entre em sua conta para continuar"
             submitButtonLabel="Entrar"
             disableSubmitButton={false}
-            submitButtonTo="/"
             onSubmit={(e) => handleSubmit(e)}
             alternativeFlowLabel="Ainda não tem uma conta?"
             icon={UserRoundPlus}
