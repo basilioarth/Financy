@@ -33,7 +33,7 @@ export function FormLayout({
                 className="w-auto h-8"
             />
             <div
-                className="w-112 h-fit flex flex-col px-8 py-8 justify-center align-center bg-white border border-gray-200 rounded-xl gap-8"
+                className="w-[448px] h-fit flex flex-col px-8 py-8 justify-center align-center bg-white border border-gray-200 rounded-xl gap-8"
             >
                 <div className="flex flex-col justify-center items-center gap-1">
                     <strong className="text-xl leading-7 text-gray-800">{title}</strong>
