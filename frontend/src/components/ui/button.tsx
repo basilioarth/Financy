@@ -17,8 +17,10 @@ const buttonVariants = cva(
           "bg-white shadow-none text-gray-700 border border-gray-300 hover:bg-gray-200 disabled:opacity-50",
         paginationButton:
           "bg-white shadow-none text-gray-700 border border-gray-300 hover:bg-gray-200 active:bg-brand-base active:text-white disabled:opacity-50",
-        link:
+        linkActivated:
           "bg-transparent shadow-none text-brand-base hover:underline",
+        linkDeactivated:
+          "bg-transparent shadow-none text-gray-600 hover:text-brand-base hover:underline",
         typeIncome:
           "bg-transparent shadow-none text-green-dark",
         typeOutcome:

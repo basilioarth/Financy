@@ -83,7 +83,7 @@ export function FormField({
                         <Checkbox />
                         <span className="text-gray-700">Lembrar-me</span>
                     </div>
-                    <Button variant="link" size="link">Recuperar senha</Button>
+                    <Button variant="linkActivated" size="link">Recuperar senha</Button>
                 </div>
             )
             }

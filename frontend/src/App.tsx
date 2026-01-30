@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Layout } from "@/components/Layout"
-import { Login } from "@/pages/Login"
-import { Signup } from "@/pages/Signup"
+import { Login } from "@/pages/Auth/Login"
+import { Signup } from "@/pages/Auth/Signup"
+import { Categories } from "@/pages/Categories"
 import { useAuthStore } from "./stores/auth"
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -34,14 +35,15 @@ function App() {
             </PublicRoute>
           }
         />
-        {/* <Route
+        <Route
           path="/"
           element={
             <ProtectedRoute>
-              <DashBoard />
+              <Categories />
             </ProtectedRoute>
           }
         />
+        {/*
         <Route
           path="/transactions"
           element={

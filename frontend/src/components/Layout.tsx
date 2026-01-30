@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/sonner"
+import { Header } from "@/components/Header"
 
 interface LayoutProps {
     children: React.ReactNode
@@ -7,6 +8,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
     return (
         <div className="min-h-screen bg-gray-100">
+            <Header />
             <main className="mx-auto px-12 py-12 font-inter">{children}</main>
             <Toaster />
         </div>
