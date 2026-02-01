@@ -21,6 +21,10 @@ const buttonVariants = cva(
           "bg-transparent shadow-none text-brand-base hover:underline",
         linkDeactivated:
           "bg-transparent shadow-none text-gray-600 hover:text-brand-base hover:underline",
+        tabActivated:
+          "bg-transparent shadow-none text-brand-base",
+        tabDeactivated:
+          "bg-transparent shadow-none text-gray-600 hover:text-brand-base",
         typeIncome:
           "bg-transparent shadow-none text-green-dark",
         typeOutcome:
@@ -38,6 +42,7 @@ const buttonVariants = cva(
         icon: "h-8 w-8 px-2 py-2 rounded-lg",
         pagination: "h-8 w-8 px-2 py-2 rounded-lg",
         link: "text-sm leading-5 h-5 w-auto p-0 rounded-0",
+        tab: "text-sm leading-5 h-5 w-auto p-0 rounded-0",
         type: "text-sm leading-5 h-5 w-auto p-0 rounded-0"
         // sm: "h-8 rounded-md px-3 text-xs",
         // lg: "h-10 rounded-md px-8",

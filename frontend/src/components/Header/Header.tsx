@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/stores/auth"
-import { Button } from "./ui/button"
-import { Avatar, AvatarFallback } from "./ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export function Header() {
     const { user, logout, isAuthenticated } = useAuthStore()
@@ -28,8 +28,8 @@ export function Header() {
                     <div className="flex items-center gap-5">
                         <Link to="/">
                             <Button
-                                size="link"
-                                variant={isDashboardPage ? "linkActivated" : "linkDeactivated"}
+                                size="tab"
+                                variant={isDashboardPage ? "tabActivated" : "tabDeactivated"}
                                 className={isDashboardPage ? "font-semibold" : ""}
                             >
                                 Dashboard
@@ -37,8 +37,8 @@ export function Header() {
                         </Link>
                         <Link to="/transactions">
                             <Button
-                                size="link"
-                                variant={isTransactionsPage ? "linkActivated" : "linkDeactivated"}
+                                size="tab"
+                                variant={isTransactionsPage ? "tabActivated" : "tabDeactivated"}
                                 className={isTransactionsPage ? "font-semibold" : ""}
                             >
                                 Transações
@@ -46,8 +46,8 @@ export function Header() {
                         </Link>
                         <Link to="/categories">
                             <Button
-                                size="link"
-                                variant={isCategoriesPage ? "linkActivated" : "linkDeactivated"}
+                                size="tab"
+                                variant={isCategoriesPage ? "tabActivated" : "tabDeactivated"}
                                 className={isCategoriesPage ? "font-semibold" : ""}
                             >
                                 Categorias

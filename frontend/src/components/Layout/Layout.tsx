@@ -7,9 +7,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 font-inter">
             <Header />
-            <main className="mx-auto px-12 py-12 font-inter">{children}</main>
+            <main className="mx-auto px-12 py-12">{children}</main>
             <Toaster />
         </div>
     )
