@@ -1,0 +1,1 @@
+export const availableColors: string[] = ['green', 'blue', 'purple', 'pink', 'red', 'orange', 'yellow']

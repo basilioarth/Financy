@@ -43,15 +43,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/*
-        <Route
+        {/* <Route
           path="/transactions"
           element={
             <ProtectedRoute>
               <Transactions />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/categories"
           element={
@@ -59,7 +58,7 @@ function App() {
               <Categories />
             </ProtectedRoute>
           }
-        /> */}
+        />
       </Routes>
     </Layout>
   )
