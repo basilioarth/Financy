@@ -6,13 +6,16 @@ import { IsAuth } from "../middlewares/auth.middleware";
 import { GqlUser } from "../graphql/decorators/user.decorator";
 import { User } from "@prisma/client";
 import { UserModel } from "../models/user.model";
+import { TransactionModel } from "../models/transaction.model";
 import { UserService } from "../services/user.service";
+import { TransactionService } from "../services/transaction.service";
 
 @Resolver(() => CategoryModel)
 @UseMiddleware(IsAuth)
 export class CategoryResolver {
     private categoryService = new CategoryService();
     private userService = new UserService();
+    private transactionService = new TransactionService();
 
     @Mutation(() => CategoryModel)
     async createCategory(
@@ -59,5 +62,13 @@ export class CategoryResolver {
     @FieldResolver(() => UserModel)
     async author(@Root() category: CategoryModel): Promise<UserModel> {
         return this.userService.findUserById(category.authorId);
+    }
+
+    @FieldResolver(() => TransactionModel)
+    async transactions(
+        @Root() category: CategoryModel,
+        @GqlUser() user: User
+    ): Promise<TransactionModel[]> {
+        return this.transactionService.getTransactionByCategoryId(category.id, user.id)
     }
 }

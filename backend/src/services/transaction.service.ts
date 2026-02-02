@@ -37,6 +37,15 @@ export class TransactionService {
         return transaction;
     }
 
+    async getTransactionByCategoryId(categoryId: string, authenticatedUserId: string) {
+        return await prismaClient.transaction.findMany({
+            where: {
+                categoryId: categoryId,
+                authorId: authenticatedUserId
+            }
+        });
+    }
+
     async updateTransactionById(id: string, data: TransactionInput, authenticatedUserId: string) {
 
         const existingTransaction = await prismaClient.transaction.findUnique({

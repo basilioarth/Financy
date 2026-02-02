@@ -1,100 +1,51 @@
+import { useState } from "react"
+import { toast } from "sonner"
+import { Plus, Tag, ArrowUpDown, Utensils } from "lucide-react"
+import { useQuery } from "@apollo/client/react"
+import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category"
+import { apolloClient } from "@/lib/graphql/apollo"
+import { CREATE_CATEGORY } from "@/lib/graphql/mutations/Category"
 import { Button } from "@/components/ui/button"
-import { Plus, Tag, ArrowUpDown, Utensils, Ticket, PiggyBank, ShoppingCart, BriefcaseBusiness, HeartPulse, CarFront, ToolCase } from "lucide-react"
-import { LabelCard } from "./components/LabelCard"
-import { CategoryCard, type CategoryCardProps } from "./components/CategoryCard"
 import {
     Dialog,
     DialogClose,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { FieldGroup } from "@/components/ui/field"
 import { FormField } from "@/components/FormField"
-import { useState } from "react"
-import { availableIcons } from "@/hooks/useIcons";
-import { CategoryIconContainer } from "./components/CategoryIconContainer"
+import { availableIcons, getIconByName } from "@/hooks/useIcons"
 import { availableColors } from "@/hooks/useColors"
+import { Category, CategoryInput } from "@/types"
+import { LabelCard } from "./components/LabelCard"
+import { CategoryCard } from "./components/CategoryCard"
+import { CategoryIconContainer } from "./components/CategoryIconContainer"
 import { ColorPicker } from "./components/ColorPicker"
 
+type CreateCategoryInput = {
+    id: string
+    code: string
+    title: string
+    description: string
+    iconName: string
+    colorHexCode: string
+    createdAt: string
+    updatedAt: string
+    author: {
+        email: string
+        fullName: string
+    }
+}
+
 export function Categories() {
-    const categoryList: CategoryCardProps[] = [
-        {
-            icon: Utensils,
-            iconColor: "blue-base",
-            backgroundColor: "blue-light",
-            labelColor: "blue-dark",
-            title: "Alimentação",
-            description: "Restaurantes, delivery e refeições",
-            itemsAmount: "12 itens"
-        },
-        {
-            icon: Ticket,
-            iconColor: "pink-base",
-            backgroundColor: "pink-light",
-            labelColor: "pink-dark",
-            title: "Entretenimento",
-            description: "Cinema, jogos e lazer",
-            itemsAmount: "2 itens"
-        },
-        {
-            icon: PiggyBank,
-            iconColor: "green-base",
-            backgroundColor: "green-light",
-            labelColor: "green-dark",
-            title: "Investimento",
-            description: "Aplicações e retornos financeiros",
-            itemsAmount: "1 item"
-        },
-        {
-            icon: ShoppingCart,
-            iconColor: "orange-base",
-            backgroundColor: "orange-light",
-            labelColor: "orange-dark",
-            title: "Mercado",
-            description: "Compras de supermercado e mantimentos",
-            itemsAmount: "3 itens"
-        },
-        {
-            icon: BriefcaseBusiness,
-            iconColor: "green-base",
-            backgroundColor: "green-light",
-            labelColor: "green-dark",
-            title: "Salário",
-            description: "Renda mensal e bonificações",
-            itemsAmount: "3 itens"
-        },
-        {
-            icon: HeartPulse,
-            iconColor: "red-base",
-            backgroundColor: "red-light",
-            labelColor: "red-dark",
-            title: "Saúde",
-            description: "Medicamentos, consultas e exames",
-            itemsAmount: "0 itens"
-        },
-        {
-            icon: CarFront,
-            iconColor: "purple-base",
-            backgroundColor: "purple-light",
-            labelColor: "purple-dark",
-            title: "Transporte",
-            description: "Gasolina, transporte público e viagens",
-            itemsAmount: "8 itens"
-        },
-        {
-            icon: ToolCase,
-            iconColor: "yellow-base",
-            backgroundColor: "yellow-light",
-            labelColor: "yellow-dark",
-            title: "Utilidades",
-            description: "Energia, água, internet e telefone",
-            itemsAmount: "7 itens"
-        }
-    ]
+    const { data, loading, refetch } = useQuery<{ listCategories: Category[] }>(
+        LIST_ALL_CATEGORIES
+    );
+    const categories = data?.listCategories ?? [];
+    console.log(categories);
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -113,8 +64,31 @@ export function Categories() {
         console.log(formData.color)
     }
 
-    const handleCreateNewCategory = () => {
-        console.log(formData);
+    const formattTransactionsAmount = (amount: number) => {
+        return (amount == 1) ? `${amount} item` : `${amount} itens`;
+    }
+
+    const handleCreateNewCategory = async () => {
+        try {
+            await apolloClient.mutate<CreateCategoryInput, { data: CategoryInput }>({
+                mutation: CREATE_CATEGORY,
+                variables: {
+                    data: {
+                        title: formData.title,
+                        description: formData.description,
+                        iconName: formData.iconName,
+                        colorHexCode: formData.color
+                    }
+                }
+            });
+            toast.success("Categoria criada com sucesso!");
+
+            refetch();
+        } catch (error) {
+            console.error(error);
+            toast.error("Erro ao tentar criar categoria!");
+        }
+
         clearInputs();
     }
 
@@ -153,17 +127,17 @@ export function Categories() {
                     />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {
-                        categoryList.map((category) => (
+                    {!loading &&
+                        categories.map((category) => (
                             <CategoryCard
-                                key={category.title}
-                                icon={category.icon}
-                                iconColor={category.iconColor}
-                                backgroundColor={category.backgroundColor}
-                                labelColor={category.labelColor}
+                                key={category.code}
+                                icon={getIconByName(category.iconName)}
+                                iconColor={`${category.colorHexCode}-base`}
+                                backgroundColor={`${category.colorHexCode}-light`}
+                                labelColor={`${category.colorHexCode}-dark`}
                                 title={category.title}
                                 description={category.description}
-                                itemsAmount={category.itemsAmount}
+                                itemsAmount={formattTransactionsAmount(category.transactions.length)}
                             />
                         ))
                     }

@@ -13,7 +13,41 @@ export interface UserInput {
     password: string
 }
 
+export interface Author {
+    email: string
+    fullName: string
+}
+
 export interface AuthInput {
     email: string
     password: string
+}
+
+export interface Transaction {
+    type: string
+    description: string
+    date: string
+    value: string
+    category: {
+        title: string
+        description: string
+    }
+    author: Author
+}
+
+export interface Category {
+    code: string
+    title: string
+    description: string
+    iconName: string
+    colorHexCode: string
+    author: Author
+    transactions: Transaction[]
+}
+
+export interface CategoryInput {
+    title: string
+    description: string
+    iconName: string,
+    colorHexCode: string
 }

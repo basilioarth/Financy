@@ -90,6 +90,6 @@ export const availableIcons: CategoryIcon[] = [
     }
 ]
 
-export const getIconsByName = (name: string): LucideIcon => {
+export const getIconByName = (name: string): LucideIcon => {
     return availableIcons.filter((availableIcon) => availableIcon.name == name)[0].icon;
 }
