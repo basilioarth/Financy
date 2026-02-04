@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Arg } from "type-graphql";
-import { AuthInput, AuthOutput } from "../dtos/auth.dto";
+import { AuthInput, AuthOutput, RefreshAuthInput } from "../dtos/auth.dto";
 import { UserInput } from "../dtos/user.dto";
 import { AuthService } from "../services/auth.service";
 
@@ -19,5 +19,12 @@ export class AuthResolver {
         @Arg('data', () => UserInput) data: UserInput
     ): Promise<AuthOutput> {
         return this.authService.register(data);
+    }
+
+    @Mutation(() => AuthOutput)
+    async refresh(
+        @Arg('data', () => RefreshAuthInput) data: RefreshAuthInput
+    ): Promise<AuthOutput> {
+        return this.authService.refresh(data);
     }
 }

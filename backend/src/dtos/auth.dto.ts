@@ -10,6 +10,12 @@ export class AuthInput {
     password!: string;
 }
 
+@InputType()
+export class RefreshAuthInput {
+    @Field(() => String)
+    refreshToken!: string
+}
+
 @ObjectType()
 export class AuthOutput {
     @Field(() => String)

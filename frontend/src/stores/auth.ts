@@ -1,17 +1,10 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { apolloClient } from "@/lib/graphql/apollo"
-import type { User, UserInput, AuthInput } from '@/types'
+import type { User, UserInput, AuthInput, RefreshInput } from '@/types'
 import { REGISTER } from '@/lib/graphql/mutations/Register'
 import { LOGIN } from '@/lib/graphql/mutations/Login'
-
-type RegisterMutationData = {
-    register: {
-        token: string
-        refreshToken: string
-        user: User
-    }
-}
+import { REFRESH } from "@/lib/graphql/mutations/Refresh"
 
 type LoginMutationData = {
     login: {
@@ -21,12 +14,30 @@ type LoginMutationData = {
     }
 }
 
+type RegisterMutationData = {
+    register: {
+        token: string
+        refreshToken: string
+        user: User
+    }
+}
+
+type RefreshutationData = {
+    refresh: {
+        token: string
+        refreshToken: string
+        user: User
+    }
+}
+
 interface AuthState {
     user: User | null
     token: string | null
+    refreshToken: string | null
     isAuthenticated: boolean
     signup: (data: UserInput) => Promise<boolean>
     login: (data: AuthInput) => Promise<boolean>
+    refresh: (data: RefreshInput) => Promise<boolean>
     logout: () => void
 }
 
@@ -35,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             user: null,
             token: null,
+            refreshToken: null,
             isAuthenticated: false,
             login: async (loginData: AuthInput) => {
                 try {
@@ -49,7 +61,7 @@ export const useAuthStore = create<AuthState>()(
                     })
 
                     if (data?.login) {
-                        const { user, token } = data.login
+                        const { user, token, refreshToken } = data.login
                         set({
                             user: {
                                 id: user.id,
@@ -59,6 +71,7 @@ export const useAuthStore = create<AuthState>()(
                                 updatedAt: user.updatedAt
                             },
                             token,
+                            refreshToken,
                             isAuthenticated: true
                         })
                         return true
@@ -86,7 +99,7 @@ export const useAuthStore = create<AuthState>()(
                     })
 
                     if (data?.register) {
-                        const { token, user } = data.register
+                        const { user, token, refreshToken } = data.register
                         set({
                             user: {
                                 id: user.id,
@@ -96,6 +109,7 @@ export const useAuthStore = create<AuthState>()(
                                 updatedAt: user.updatedAt
                             },
                             token,
+                            refreshToken,
                             isAuthenticated: true
                         })
                         return true
@@ -106,10 +120,48 @@ export const useAuthStore = create<AuthState>()(
                     throw error
                 }
             },
+            refresh: async (refreshData: RefreshInput) => {
+                console.log("Refresh chamado")
+                try {
+                    const { data } = await apolloClient.mutate<
+                        RefreshutationData,
+                        { data: RefreshInput }
+                    >({
+                        mutation: REGISTER,
+                        variables: {
+                            data: {
+                                refreshToken: refreshData.refreshToken
+                            }
+                        }
+                    })
+
+                    if (data?.refresh) {
+                        const { user, token, refreshToken } = data.refresh
+                        set({
+                            user: {
+                                id: user.id,
+                                fullName: user.fullName,
+                                email: user.email,
+                                createdAt: user.createdAt,
+                                updatedAt: user.updatedAt
+                            },
+                            token,
+                            refreshToken,
+                            isAuthenticated: true
+                        })
+                        return true
+                    }
+                    return false
+                } catch (error) {
+                    throw error
+                }
+            },
             logout: () => {
+                console.log("Logout chamado!")
                 set({
                     user: null,
                     token: null,
+                    refreshToken: null,
                     isAuthenticated: false
                 })
                 apolloClient.clearStore()

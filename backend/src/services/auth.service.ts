@@ -1,8 +1,8 @@
 import { User } from "@prisma/client";
 import { prismaClient } from "../../prisma/prisma";
-import { AuthInput } from "../dtos/auth.dto";
+import { AuthInput, RefreshAuthInput } from "../dtos/auth.dto";
 import { comparePassword } from "../utils/hash";
-import { signJwt } from "../utils/jwt";
+import { signJwt, verifyJwt, JwtPayload } from "../utils/jwt";
 import { UserInput } from "../dtos/user.dto";
 import { UserService } from "./user.service";
 
@@ -32,9 +32,27 @@ export class AuthService {
         return this.generateTokens(createdUser);
     }
 
+    async refresh(data: RefreshAuthInput) {
+        try {
+            const payload = verifyJwt(data.refreshToken) as JwtPayload;
+
+            const existingUser = await prismaClient.user.findUnique({
+                where: {
+                    email: payload.email
+                }
+            });
+
+            if (!existingUser) throw new Error('Usuário não cadastrado!');
+
+            return this.generateTokens(existingUser)
+        } catch (error) {
+            console.log("Erro ao fazer o refresh automático da autenticação!");
+        }
+    }
+
     generateTokens(user: User) {
-        const token = signJwt({ fullName: user.fullName, email: user.email }, '15m');
-        const refreshToken = signJwt({ fullName: user.fullName, email: user.email }, '1d');
+        const token = signJwt({ fullName: user.fullName, email: user.email }, '1m'); // 15m
+        const refreshToken = signJwt({ fullName: user.fullName, email: user.email }, '2m'); // 1d
 
         return { token, refreshToken, user };
     }

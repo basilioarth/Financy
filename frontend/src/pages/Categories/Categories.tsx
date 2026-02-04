@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { toast } from "sonner"
 import { Plus, Tag, ArrowUpDown, Utensils } from "lucide-react"
 import { useQuery } from "@apollo/client/react"
 import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category"
@@ -24,6 +23,7 @@ import { LabelCard } from "./components/LabelCard"
 import { CategoryCard } from "./components/CategoryCard"
 import { CategoryIconContainer } from "./components/CategoryIconContainer"
 import { ColorPicker } from "./components/ColorPicker"
+import { handleGqlResponse } from "@/utils/gqlResponseHandler"
 
 type CreateCategoryInput = {
     id: string
@@ -41,11 +41,14 @@ type CreateCategoryInput = {
 }
 
 export function Categories() {
-    const { data, loading, refetch } = useQuery<{ listCategories: Category[] }>(
+    const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(
         LIST_ALL_CATEGORIES
     );
+
+    error && handleGqlResponse({ type: "error", message: error.message });
+
     const categories = data?.listCategories ?? [];
-    console.log(categories);
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -81,12 +84,12 @@ export function Categories() {
                     }
                 }
             });
-            toast.success("Categoria criada com sucesso!");
+            handleGqlResponse({ type: "success", message: "Categoria criada com sucesso!" })
 
             refetch();
         } catch (error) {
             console.error(error);
-            toast.error("Erro ao tentar criar categoria!");
+            handleGqlResponse({ type: "error", message: "Erro ao tentar criar categoria!" })
         }
 
         clearInputs();

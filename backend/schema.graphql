@@ -48,6 +48,7 @@ type Mutation {
   deleteTransaction(id: String!): Boolean!
   deleteUser(email: String!): Boolean!
   login(data: AuthInput!): AuthOutput!
+  refresh(data: RefreshAuthInput!): AuthOutput!
   register(data: UserInput!): AuthOutput!
   updateCategory(code: String!, data: CategoryInput!): CategoryModel!
   updateTransaction(data: TransactionInput!, id: String!): TransactionModel!
@@ -61,6 +62,10 @@ type Query {
   listCategories: [CategoryModel!]!
   listTransactions: [TransactionModel!]!
   listUsers: [UserModel!]!
+}
+
+input RefreshAuthInput {
+  refreshToken: String!
 }
 
 input TransactionInput {

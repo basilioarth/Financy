@@ -22,7 +22,9 @@ export const buildContext = async ({
         try {
             const payload = verifyJwt(token) as JwtPayload;
             user = payload.email;
-        } catch (error) { }
+        } catch (error) {
+            console.log("Erro no context do graphql")
+        }
     }
 
     return { user, token, req, res };

@@ -23,6 +23,10 @@ export interface AuthInput {
     password: string
 }
 
+export interface RefreshInput {
+    refreshToken: string | null
+}
+
 export interface Transaction {
     type: string
     description: string
