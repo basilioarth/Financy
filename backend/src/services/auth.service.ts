@@ -46,13 +46,14 @@ export class AuthService {
 
             return this.generateTokens(existingUser)
         } catch (error) {
-            console.log("Erro ao fazer o refresh automático da autenticação!");
+            console.error("Erro ao fazer o refresh automático da autenticação!");
+            return null;
         }
     }
 
     generateTokens(user: User) {
-        const token = signJwt({ fullName: user.fullName, email: user.email }, '1m'); // 15m
-        const refreshToken = signJwt({ fullName: user.fullName, email: user.email }, '2m'); // 1d
+        const token = signJwt({ fullName: user.fullName, email: user.email }, '15m');
+        const refreshToken = signJwt({ fullName: user.fullName, email: user.email }, '1d');
 
         return { token, refreshToken, user };
     }

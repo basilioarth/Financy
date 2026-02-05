@@ -78,7 +78,7 @@ export const useAuthStore = create<AuthState>()(
                     }
                     return false
                 } catch (error) {
-                    console.log("Erro ao fazer o login")
+                    console.error("Erro ao fazer o login")
                     throw error
                 }
             },
@@ -116,18 +116,17 @@ export const useAuthStore = create<AuthState>()(
                     }
                     return false
                 } catch (error) {
-                    console.log("Erro ao fazer o cadastro")
+                    console.error("Erro ao fazer o cadastro")
                     throw error
                 }
             },
             refresh: async (refreshData: RefreshInput) => {
-                console.log("Refresh chamado")
                 try {
                     const { data } = await apolloClient.mutate<
                         RefreshutationData,
                         { data: RefreshInput }
                     >({
-                        mutation: REGISTER,
+                        mutation: REFRESH,
                         variables: {
                             data: {
                                 refreshToken: refreshData.refreshToken
@@ -157,7 +156,6 @@ export const useAuthStore = create<AuthState>()(
                 }
             },
             logout: () => {
-                console.log("Logout chamado!")
                 set({
                     user: null,
                     token: null,

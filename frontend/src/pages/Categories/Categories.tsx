@@ -23,7 +23,7 @@ import { LabelCard } from "./components/LabelCard"
 import { CategoryCard } from "./components/CategoryCard"
 import { CategoryIconContainer } from "./components/CategoryIconContainer"
 import { ColorPicker } from "./components/ColorPicker"
-import { handleGqlResponse } from "@/utils/gqlResponseHandler"
+import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
 
 type CreateCategoryInput = {
     id: string
@@ -41,6 +41,7 @@ type CreateCategoryInput = {
 }
 
 export function Categories() {
+    const handleGqlResponse = useGqlResponseHandler();
     const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(
         LIST_ALL_CATEGORIES
     );
@@ -64,7 +65,6 @@ export function Categories() {
 
     const handleChange = (field: string, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-        console.log(formData.color)
     }
 
     const formattTransactionsAmount = (amount: number) => {

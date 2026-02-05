@@ -24,7 +24,7 @@ export class AuthResolver {
     @Mutation(() => AuthOutput)
     async refresh(
         @Arg('data', () => RefreshAuthInput) data: RefreshAuthInput
-    ): Promise<AuthOutput> {
+    ): Promise<AuthOutput | null> {
         return this.authService.refresh(data);
     }
 }

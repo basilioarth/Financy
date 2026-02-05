@@ -20,7 +20,7 @@ export const GqlUser = () => {
 
             return user;
         } catch (error) {
-            console.log('Erro ao instanciar o gql user')
+            console.error('Erro ao instanciar o gql user')
         }
     });
 }
