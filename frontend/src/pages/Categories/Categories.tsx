@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Plus, Tag, ArrowUpDown, Utensils } from "lucide-react"
+import { Plus, Tag, ArrowUpDown, Utensils, SearchX } from "lucide-react"
 import { useQuery } from "@apollo/client/react"
 import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category"
 import { apolloClient } from "@/lib/graphql/apollo"
@@ -24,6 +24,7 @@ import { CategoryCard } from "./components/CategoryCard"
 import { CategoryIconContainer } from "./components/CategoryIconContainer"
 import { ColorPicker } from "./components/ColorPicker"
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
+import { NotFound } from "@/components/NotFound"
 
 type CreateCategoryInput = {
     id: string
@@ -42,10 +43,10 @@ type CreateCategoryInput = {
 
 export function Categories() {
     const handleGqlResponse = useGqlResponseHandler();
+
     const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(
         LIST_ALL_CATEGORIES
     );
-
     error && handleGqlResponse({ type: "error", message: error.message });
 
     const categories = data?.listCategories ?? [];
@@ -145,6 +146,9 @@ export function Categories() {
                         ))
                     }
                 </div>
+                {categories.length === 0 && (
+                    <NotFound message="Nenhuma categoria encontrada" />
+                )}
             </div>
             <DialogContent className="font-inter">
                 <DialogHeader>
