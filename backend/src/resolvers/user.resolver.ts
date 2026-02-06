@@ -3,6 +3,8 @@ import { UserModel } from "../models/user.model";
 import { UserService } from "../services/user.service";
 import { UserInput, UpdateUserInput } from "../dtos/user.dto";
 import { IsAuth } from "../middlewares/auth.middleware";
+import { GqlUser } from "../graphql/decorators/user.decorator";
+import { User } from "@prisma/client";
 
 @Resolver(() => UserModel)
 @UseMiddleware(IsAuth)
@@ -18,10 +20,10 @@ export class UserResolver {
 
     @Mutation(() => UserModel)
     async updateUser(
-        @Arg('email', () => String) email: string,
+        @GqlUser() user: User,
         @Arg('data', () => UpdateUserInput) data: UpdateUserInput
     ): Promise<UserModel> {
-        return this.userService.updateUserByEmail(email, data);
+        return this.userService.updateUserByEmail(user.email, data);
     }
 
     @Mutation(() => Boolean)

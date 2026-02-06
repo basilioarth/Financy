@@ -52,7 +52,7 @@ type Mutation {
   register(data: UserInput!): AuthOutput!
   updateCategory(code: String!, data: CategoryInput!): CategoryModel!
   updateTransaction(data: TransactionInput!, id: String!): TransactionModel!
-  updateUser(data: UpdateUserInput!, email: String!): UserModel!
+  updateUser(data: UpdateUserInput!): UserModel!
 }
 
 type Query {

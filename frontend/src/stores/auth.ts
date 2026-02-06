@@ -1,10 +1,11 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { apolloClient } from "@/lib/graphql/apollo"
-import type { User, UserInput, AuthInput, RefreshInput } from '@/types'
+import type { User, UserInput, AuthInput, RefreshInput, UpdateUserInput } from '@/types'
 import { REGISTER } from '@/lib/graphql/mutations/Register'
 import { LOGIN } from '@/lib/graphql/mutations/Login'
 import { REFRESH } from "@/lib/graphql/mutations/Refresh"
+import { UPDATE_USER } from "@/lib/graphql/mutations/UpdateUser"
 
 type LoginMutationData = {
     login: {
@@ -22,12 +23,16 @@ type RegisterMutationData = {
     }
 }
 
-type RefreshutationData = {
+type RefreshMutationData = {
     refresh: {
         token: string
         refreshToken: string
         user: User
     }
+}
+
+type UpdateUserMutationData = {
+    updatedUser: User
 }
 
 interface AuthState {
@@ -39,6 +44,7 @@ interface AuthState {
     login: (data: AuthInput) => Promise<boolean>
     refresh: (data: RefreshInput) => Promise<boolean>
     logout: () => void
+    updateUser: (data: UpdateUserInput) => Promise<boolean>
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -123,7 +129,7 @@ export const useAuthStore = create<AuthState>()(
             refresh: async (refreshData: RefreshInput) => {
                 try {
                     const { data } = await apolloClient.mutate<
-                        RefreshutationData,
+                        RefreshMutationData,
                         { data: RefreshInput }
                     >({
                         mutation: REFRESH,
@@ -147,6 +153,40 @@ export const useAuthStore = create<AuthState>()(
                             token,
                             refreshToken,
                             isAuthenticated: true
+                        })
+                        return true
+                    }
+                    return false
+                } catch (error) {
+                    throw error
+                }
+            },
+            updateUser: async (updateUserData: UpdateUserInput) => {
+                try {
+                    const { data } = await apolloClient.mutate<
+                        User,
+                        { data: UpdateUserInput }
+                    >({
+                        mutation: UPDATE_USER,
+                        variables: {
+                            data: {
+                                fullName: updateUserData.fullName
+                            }
+                        }
+                    })
+
+                    console.log("AQUIIIIIII")
+
+                    if (data) {
+                        console.log(data)
+                        set({
+                            user: {
+                                id: data.id,
+                                fullName: data.fullName,
+                                email: data.email,
+                                createdAt: data.createdAt,
+                                updatedAt: data.updatedAt
+                            }
                         })
                         return true
                     }

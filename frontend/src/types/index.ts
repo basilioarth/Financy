@@ -27,6 +27,10 @@ export interface RefreshInput {
     refreshToken: string | null
 }
 
+export interface UpdateUserInput {
+    fullName: string
+}
+
 export interface Transaction {
     type: string
     description: string

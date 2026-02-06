@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { Layout } from "@/components/Layout"
 import { Login } from "@/pages/Auth/Login"
 import { Signup } from "@/pages/Auth/Signup"
+import { Profile } from "@/pages/Profile"
 import { Categories } from "@/pages/Categories"
 import { useAuthStore } from "./stores/auth"
 
@@ -56,6 +57,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Categories />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

@@ -21,6 +21,7 @@ interface FormField {
     error: string
     hidden?: boolean
     onChangeVisibility?: (value: boolean) => void
+    disabled?: boolean
 }
 
 export function FormField({
@@ -34,7 +35,8 @@ export function FormField({
     icon: Icon,
     error,
     hidden,
-    onChangeVisibility
+    onChangeVisibility,
+    disabled
 }: FormField) {
     return (
         <Field className="gap-2 group font-inter">
@@ -59,6 +61,7 @@ export function FormField({
                     value={value}
                     onChange={(e) => onChangeValue(e.target.value)}
                     className={cn(Icon && "pl-10", type == "password" && "pr-10")}
+                    disabled={disabled}
                 />
                 {
                     (onChangeVisibility) && (
