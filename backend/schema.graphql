@@ -44,19 +44,19 @@ type Mutation {
   createCategory(data: CategoryInput!): CategoryModel!
   createTransaction(data: TransactionInput!): TransactionModel!
   createUser(data: UserInput!): UserModel!
-  deleteCategory(code: String!): Boolean!
+  deleteCategory(id: String!): Boolean!
   deleteTransaction(id: String!): Boolean!
   deleteUser(email: String!): Boolean!
   login(data: AuthInput!): AuthOutput!
   refresh(data: RefreshAuthInput!): AuthOutput!
   register(data: UserInput!): AuthOutput!
-  updateCategory(code: String!, data: CategoryInput!): CategoryModel!
+  updateCategory(data: CategoryInput!, id: String!): CategoryModel!
   updateTransaction(data: TransactionInput!, id: String!): TransactionModel!
   updateUser(data: UpdateUserInput!): UserModel!
 }
 
 type Query {
-  getCategory(code: String!): CategoryModel!
+  getCategory(id: String!): CategoryModel!
   getTransaction(id: String!): TransactionModel!
   getUser(email: String!): UserModel!
   listCategories: [CategoryModel!]!

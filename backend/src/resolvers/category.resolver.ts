@@ -27,29 +27,29 @@ export class CategoryResolver {
 
     @Mutation(() => CategoryModel)
     async updateCategory(
-        @Arg('code', () => String) code: string,
+        @Arg('id', () => String) id: string,
         @Arg('data', () => CategoryInput) data: CategoryInput,
         @GqlUser() user: User
     ): Promise<CategoryModel> {
-        return this.categoryService.updateCategoryByCode(code, data, user.id);
+        return this.categoryService.updateCategory(id, data, user.id);
     }
 
     @Mutation(() => Boolean)
     async deleteCategory(
-        @Arg('code', () => String) code: string,
+        @Arg('id', () => String) id: string,
         @GqlUser() user: User
     ): Promise<Boolean> {
-        await this.categoryService.deleteCategoryByCode(code, user.id);
+        await this.categoryService.deleteCategoryById(id, user.id);
 
         return true;
     }
 
     @Query(() => CategoryModel)
     async getCategory(
-        @Arg('code', () => String) code: string,
+        @Arg('id', () => String) id: string,
         @GqlUser() user: User
     ): Promise<CategoryModel> {
-        return this.categoryService.getCategoryByCode(code, user.id);
+        return this.categoryService.getCategoryById(id, user.id);
     }
 
     @Query(() => [CategoryModel])

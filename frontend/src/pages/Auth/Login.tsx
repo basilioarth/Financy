@@ -20,16 +20,13 @@ export function Login() {
         setLoading(true)
 
         try {
-            const loginMutate = await login({
+            await login({
                 email: formData.email,
                 password: formData.password,
             })
 
-            if (loginMutate) {
-                toast.success("Login realizado com sucesso!")
-            }
         } catch (error) {
-            toast.success("Falha ao realizar o login!")
+            toast.error("Falha ao realizar o login!")
         } finally {
             setLoading(false)
         }

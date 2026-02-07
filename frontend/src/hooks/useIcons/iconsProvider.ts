@@ -15,7 +15,8 @@ import {
     BookOpen,
     BaggageClaim,
     Mailbox,
-    ReceiptText
+    ReceiptText,
+    CircleQuestionMark,
 } from "lucide-react";
 
 type CategoryIcon = {
@@ -87,6 +88,10 @@ export const availableIcons: CategoryIcon[] = [
     {
         name: "receipt-text",
         icon: ReceiptText
+    },
+    {
+        name: "question",
+        icon: CircleQuestionMark
     }
 ]
 

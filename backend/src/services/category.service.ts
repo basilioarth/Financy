@@ -14,7 +14,7 @@ export class CategoryService {
     async createCategory(data: CategoryInput, authenticatedUserId: string) {
         const categoryCode = this.generateCategoryCode(data.title);
 
-        const existingCategory = await prismaClient.category.findUnique({
+        const existingCategory = await prismaClient.category.findFirst({
             where: {
                 code: categoryCode,
                 authorId: authenticatedUserId
@@ -43,20 +43,7 @@ export class CategoryService {
         });
     }
 
-    async getCategoryByCode(code: string, authenticatedUserId: string) {
-        const category = await prismaClient.category.findUnique({
-            where: {
-                code: code,
-                authorId: authenticatedUserId
-            }
-        });
-
-        if (!category) throw new Error('Categoria não cadastrada!');
-
-        return category;
-    }
-
-    async findCategoryById(id: string, authenticatedUserId: string) {
+    async getCategoryById(id: string, authenticatedUserId: string) {
         const category = await prismaClient.category.findUnique({
             where: {
                 id: id,
@@ -69,12 +56,12 @@ export class CategoryService {
         return category;
     }
 
-    async updateCategoryByCode(categoryCode: string, data: CategoryInput, authenticatedUserId: string) {
+    async updateCategory(id: string, data: CategoryInput, authenticatedUserId: string) {
         const newCategoryCode = this.generateCategoryCode(data.title);
 
         const existingCategory = await prismaClient.category.findUnique({
             where: {
-                code: categoryCode,
+                id: id,
                 authorId: authenticatedUserId
             }
         });
@@ -83,7 +70,7 @@ export class CategoryService {
 
         return prismaClient.category.update({
             where: {
-                code: categoryCode,
+                id: id,
                 authorId: authenticatedUserId
             },
             data: {
@@ -97,10 +84,10 @@ export class CategoryService {
         });
     }
 
-    async deleteCategoryByCode(categoryCode: string, authenticatedUserId: string) {
+    async deleteCategoryById(id: string, authenticatedUserId: string) {
         const foundCategory = await prismaClient.category.findUnique({
             where: {
-                code: categoryCode,
+                id: id,
                 authorId: authenticatedUserId
             }
         });
@@ -109,7 +96,7 @@ export class CategoryService {
 
         return prismaClient.category.delete({
             where: {
-                code: categoryCode,
+                id: id,
                 authorId: authenticatedUserId
             }
         });

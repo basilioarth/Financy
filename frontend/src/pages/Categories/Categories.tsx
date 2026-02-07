@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus, Tag, ArrowUpDown, Utensils, SearchX } from "lucide-react"
 import { useQuery } from "@apollo/client/react"
 import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category"
@@ -43,6 +43,7 @@ type CreateCategoryInput = {
 
 export function Categories() {
     const handleGqlResponse = useGqlResponseHandler();
+    const [mostUsedCategory, setMostUsedCategory] = useState<Category>({ title: "Nenhuma", code: "", author: { email: "", fullName: "" }, colorHexCode: "", description: "", iconName: "question", transactions: [] });
 
     const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(
         LIST_ALL_CATEGORIES
@@ -68,10 +69,6 @@ export function Categories() {
         setFormData(prev => ({ ...prev, [field]: value }));
     }
 
-    const formattTransactionsAmount = (amount: number) => {
-        return (amount == 1) ? `${amount} item` : `${amount} itens`;
-    }
-
     const handleCreateNewCategory = async () => {
         try {
             await apolloClient.mutate<CreateCategoryInput, { data: CategoryInput }>({
@@ -90,11 +87,33 @@ export function Categories() {
             refetch();
         } catch (error) {
             console.error(error);
-            handleGqlResponse({ type: "error", message: "Erro ao tentar criar categoria!" })
+            handleGqlResponse({ type: "error", message: `${error}` })
         }
 
         clearInputs();
     }
+
+    const countTotalTransactionsAmount = () => {
+        const arrayOfTransactionsAmount = categories.map((category) => category.transactions.length)
+        const totalTransactionsAmount = arrayOfTransactionsAmount.reduce((acumulator, currentValue) => acumulator + currentValue, 0)
+
+        return totalTransactionsAmount
+    }
+
+    const calculeMostUsedCategory = () => {
+        let max = -1;
+
+        categories.forEach((category) => {
+            if (category.transactions.length > max) {
+                setMostUsedCategory(category)
+                max = category.transactions.length
+            }
+        });
+    }
+
+    useEffect(() => {
+        calculeMostUsedCategory();
+    }, [data])
 
     return (
         <Dialog>
@@ -114,19 +133,19 @@ export function Categories() {
                     <LabelCard
                         icon={Tag}
                         iconColor="text-gray-700"
-                        title="8"
+                        title={`${categories.length}`}
                         description="total de categorias"
                     />
                     <LabelCard
                         icon={ArrowUpDown}
                         iconColor="text-purple-base"
-                        title="27"
+                        title={`${countTotalTransactionsAmount()}`}
                         description="total de transações"
                     />
                     <LabelCard
-                        icon={Utensils}
-                        iconColor="text-blue-base"
-                        title="Alimentação"
+                        icon={getIconByName(mostUsedCategory.iconName)}
+                        iconColor={mostUsedCategory.colorHexCode === "" ? "text-gray-400" : `text-${mostUsedCategory.colorHexCode}-base`}
+                        title={mostUsedCategory.title}
                         description="categoria mais utilizada"
                     />
                 </div>
@@ -136,12 +155,10 @@ export function Categories() {
                             <CategoryCard
                                 key={category.code}
                                 icon={getIconByName(category.iconName)}
-                                iconColor={`${category.colorHexCode}-base`}
-                                backgroundColor={`${category.colorHexCode}-light`}
-                                labelColor={`${category.colorHexCode}-dark`}
+                                color={category.colorHexCode}
                                 title={category.title}
                                 description={category.description}
-                                itemsAmount={formattTransactionsAmount(category.transactions.length)}
+                                itemsAmount={category.transactions.length}
                             />
                         ))
                     }
@@ -182,14 +199,8 @@ export function Categories() {
                                 key={availableIcon.name}
                                 name={availableIcon.name}
                                 value={formData.iconName}
-                                backgroundColor="transparent"
-                                iconColor="gray-500"
+                                type="button"
                                 icon={availableIcon.icon}
-                                containerWidth="0"
-                                containerHeight="0"
-                                containerSize="[42px]"
-                                iconWidth="5"
-                                iconHeight="5"
                                 isAnActionButton={true}
                                 onChooseIcon={(value) => handleChange("iconName", value)}
                             />

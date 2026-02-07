@@ -1,31 +1,30 @@
 import { Button } from "@/components/ui/button"
 import { Trash, SquarePen, LucideIcon } from "lucide-react"
 import { CategoryIconContainer } from "../CategoryIconContainer"
+import { cn } from "@/lib/utils"
 
 export type CategoryCardProps = {
     icon: LucideIcon
-    iconColor: string
-    backgroundColor: string
-    labelColor: string
+    color: string
     title: string
     description: string
-    itemsAmount: string
+    itemsAmount: number
 }
 
-export function CategoryCard({ icon: Icon, iconColor, backgroundColor, labelColor, title, description, itemsAmount }: CategoryCardProps) {
+const formattTransactionsAmount = (amount: number) => {
+    return (amount == 1) ? `${amount} item` : `${amount} itens`;
+}
+
+export function CategoryCard({ icon: Icon, color, title, description, itemsAmount }: CategoryCardProps) {
     return (
         <div className="w-full h-[226px] flex flex-col justify-between items-start p-6 bg-white border-[1px] border-gray-200 rounded-xl">
             <div className="w-full h-fit flex justify-between items-start">
                 <CategoryIconContainer
-                    value={iconColor}
                     name=""
-                    backgroundColor={backgroundColor}
+                    value={color}
+                    type="icon"
+                    color={color}
                     icon={Icon}
-                    iconColor={iconColor}
-                    containerWidth="10"
-                    containerHeight="10"
-                    iconWidth="4"
-                    iconHeight="4"
                     onChooseIcon={() => { }}
                 />
                 <div className="w-fit h-fit flex justify-center items-center gap-2">
@@ -44,8 +43,17 @@ export function CategoryCard({ icon: Icon, iconColor, backgroundColor, labelColo
             </div>
 
             <div className="w-full flex justify-between items-center">
-                <span className={`bg-${backgroundColor} text-${labelColor} px-3 py-1 rounded-full text-sm font-medium`}>{title}</span>
-                <span className="text-sm text-gray-600">{itemsAmount}</span>
+                <span className={cn(
+                    "px-3 py-1 rounded-full text-sm font-medium",
+                    color === "green" && "bg-green-light text-green-dark",
+                    color === "blue" && "bg-blue-light text-blue-dark",
+                    color === "purple" && "bg-purple-light text-purple-dark",
+                    color === "pink" && "bg-pink-light text-pink-dark",
+                    color === "red" && "bg-red-light text-red-dark",
+                    color === "orange" && "bg-orange-light text-orange-dark",
+                    color === "yellow" && "bg-yellow-light text-yellow-dark",
+                )}>{title}</span>
+                <span className="text-sm text-gray-600">{formattTransactionsAmount(itemsAmount)}</span>
             </div>
         </div>
     )

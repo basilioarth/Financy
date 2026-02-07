@@ -15,7 +15,18 @@ export function ColorPicker({ color, value, onPick }: ColorPickerPorps) {
             )}
             onClick={() => onPick(color)}
         >
-            <div className={`block w-full h-full bg-${color}-base rounded-sm`}></div>
+            <div className={
+                cn(
+                    "block w-full h-full rounded-sm",
+                    color === "green" && "bg-green-base",
+                    color === "blue" && "bg-blue-base",
+                    color === "purple" && "bg-purple-base",
+                    color === "pink" && "bg-pink-base",
+                    color === "orange" && "bg-orange-base",
+                    color === "red" && "bg-red-base",
+                    color === "yellow" && "bg-yellow-base"
+                )}
+            ></div>
         </div>
     )
 }

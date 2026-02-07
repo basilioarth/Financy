@@ -175,11 +175,8 @@ export const useAuthStore = create<AuthState>()(
                         }
                     })
 
-                    console.log("AQUIIIIIII")
-
                     if (data?.updateUser) {
                         const updatedUser = data.updateUser
-                        console.log(updatedUser)
                         set({
                             user: {
                                 id: updatedUser.id,
