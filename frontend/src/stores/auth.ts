@@ -32,7 +32,7 @@ type RefreshMutationData = {
 }
 
 type UpdateUserMutationData = {
-    updatedUser: User
+    updateUser: User
 }
 
 interface AuthState {
@@ -164,7 +164,7 @@ export const useAuthStore = create<AuthState>()(
             updateUser: async (updateUserData: UpdateUserInput) => {
                 try {
                     const { data } = await apolloClient.mutate<
-                        User,
+                        UpdateUserMutationData,
                         { data: UpdateUserInput }
                     >({
                         mutation: UPDATE_USER,
@@ -177,15 +177,16 @@ export const useAuthStore = create<AuthState>()(
 
                     console.log("AQUIIIIIII")
 
-                    if (data) {
-                        console.log(data)
+                    if (data?.updateUser) {
+                        const updatedUser = data.updateUser
+                        console.log(updatedUser)
                         set({
                             user: {
-                                id: data.id,
-                                fullName: data.fullName,
-                                email: data.email,
-                                createdAt: data.createdAt,
-                                updatedAt: data.updatedAt
+                                id: updatedUser.id,
+                                fullName: updatedUser.fullName,
+                                email: updatedUser.email,
+                                createdAt: updatedUser.createdAt,
+                                updatedAt: updatedUser.updatedAt
                             }
                         })
                         return true

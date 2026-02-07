@@ -9,7 +9,7 @@ import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
 
 export function Profile() {
     const { user, logout, updateUser } = useAuthStore()
-    const [fullName, setFullName] = useState(user ? user.fullName : "")
+    const [fullName, setFullName] = useState(user?.fullName || "")
     const handleGqlResponse = useGqlResponseHandler();
 
     const handleUpdateUserInfos = async () => {
