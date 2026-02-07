@@ -90,7 +90,7 @@ export const availableIcons: CategoryIcon[] = [
         icon: ReceiptText
     },
     {
-        name: "question",
+        name: "undefined",
         icon: CircleQuestionMark
     }
 ]
