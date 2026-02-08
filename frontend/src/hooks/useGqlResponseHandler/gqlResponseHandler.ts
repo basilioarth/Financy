@@ -6,14 +6,15 @@ type ResponseType = "success" | "error" | "warning";
 
 type HandleResponseProps = {
     type: ResponseType,
-    message: string
+    message: string,
+    callBack: () => void
 }
 
 export const useGqlResponseHandler = () => {
     const { refreshToken, refresh, logout } = useAuthStore();
     const isRefreshing = useRef(false);
 
-    const handleGqlResponse = async ({ type, message }: HandleResponseProps) => {
+    const handleGqlResponse = async ({ type, message, callBack }: HandleResponseProps) => {
         switch (type) {
             case "error":
                 if (message.includes("Usuário não autenticado")) {
@@ -30,6 +31,9 @@ export const useGqlResponseHandler = () => {
                         if (!positiveResponse) {
                             throw new Error
                         }
+
+                        console.log("Callback chamada")
+                        callBack()
                     } catch (error) {
                         console.error(`Erro ao fazer o refresh automático da autenticação: ${error}`)
                         logout()
@@ -37,7 +41,7 @@ export const useGqlResponseHandler = () => {
                     } finally {
                         isRefreshing.current = false;
                     }
-                } else {
+                } else if (!message.includes("The operation was aborted")) {
                     toast.error(message)
                 }
                 break

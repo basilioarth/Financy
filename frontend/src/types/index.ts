@@ -44,6 +44,7 @@ export interface Transaction {
 }
 
 export interface Category {
+    id: string
     code: string
     title: string
     description: string

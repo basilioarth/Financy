@@ -15,21 +15,33 @@ import { Category, CategoryInput } from "@/types"
 import { ColorPicker } from "../ColorPicker"
 import { availableIcons } from "@/hooks/useIcons"
 import { CategoryIconContainer } from "../CategoryIconContainer"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { apolloClient } from "@/lib/graphql/apollo"
-import { CREATE_CATEGORY } from "@/lib/graphql/mutations/Category"
+import { CREATE_CATEGORY, UPDATE_CATEGORY } from "@/lib/graphql/mutations/Category"
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
-import { OperationVariables, ApolloClient } from "@apollo/client"
 
 type CategoryDialogProps = {
     category?: Category
     children: React.ReactNode
-    refetch: (variables?: Partial<OperationVariables> | undefined) => Promise<ApolloClient.QueryResult<{
-        listCategories: Category[];
-    }>>
+    refetch: () => void
 }
 
 type CreateCategoryInput = {
+    id: string
+    code: string
+    title: string
+    description: string
+    iconName: string
+    colorHexCode: string
+    createdAt: string
+    updatedAt: string
+    author: {
+        email: string
+        fullName: string
+    }
+}
+
+type UpdateCategoryInput = {
     id: string
     code: string
     title: string
@@ -65,29 +77,57 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
         setFormData(prev => ({ ...prev, [field]: value }));
     }
 
-    const handleCreateNewCategory = async () => {
+    const handleSubmit = async () => {
         try {
-            await apolloClient.mutate<CreateCategoryInput, { data: CategoryInput }>({
-                mutation: CREATE_CATEGORY,
-                variables: {
-                    data: {
-                        title: formData.title,
-                        description: formData.description,
-                        iconName: formData.iconName,
-                        colorHexCode: formData.color
+            if (category) {
+                await apolloClient.mutate<UpdateCategoryInput, { data: CategoryInput, updateCategoryId: string }>({
+                    mutation: UPDATE_CATEGORY,
+                    variables: {
+                        data: {
+                            title: formData.title,
+                            description: formData.description,
+                            iconName: formData.iconName,
+                            colorHexCode: formData.color
+                        },
+                        updateCategoryId: category.id
                     }
-                }
-            });
-            handleGqlResponse({ type: "success", message: "Categoria criada com sucesso!" })
+                })
 
+                handleGqlResponse({ type: "success", message: "Categoria atualizada com sucesso!", callBack: () => { } })
+            } else {
+                await apolloClient.mutate<CreateCategoryInput, { data: CategoryInput }>({
+                    mutation: CREATE_CATEGORY,
+                    variables: {
+                        data: {
+                            title: formData.title,
+                            description: formData.description,
+                            iconName: formData.iconName,
+                            colorHexCode: formData.color
+                        }
+                    }
+                });
+
+                handleGqlResponse({ type: "success", message: "Categoria criada com sucesso!", callBack: () => { } })
+            }
+            clearInputs();
             refetch();
         } catch (error) {
             console.error(error);
-            handleGqlResponse({ type: "error", message: `${error}` })
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleSubmit() })
         }
-
-        clearInputs();
     }
+
+    useEffect(() => {
+        if (isOpen && category) {
+            setFormData({
+                title: category.title,
+                description: category.description,
+                iconName: category.iconName,
+                color: category.colorHexCode
+            })
+        }
+    }, [category, isOpen])
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
@@ -95,7 +135,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
             </DialogTrigger>
             <DialogContent className="font-inter">
                 <DialogHeader>
-                    <DialogTitle>Nova categoria</DialogTitle>
+                    <DialogTitle>{category ? "Editar categoria" : "Nova categoria"}</DialogTitle>
                     <DialogDescription>Organize suas transações com categorias</DialogDescription>
                 </DialogHeader>
                 <FieldGroup className="gap-4">
@@ -150,7 +190,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
                     </div>
                 </div>
                 <DialogClose asChild>
-                    <Button onClick={() => handleCreateNewCategory()}>
+                    <Button onClick={() => handleSubmit()}>
                         Salvar
                     </Button>
                 </DialogClose>

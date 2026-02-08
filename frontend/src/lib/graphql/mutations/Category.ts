@@ -18,3 +18,22 @@ mutation CreateCategory($data: CategoryInput!){
     }
   }
 `
+
+export const UPDATE_CATEGORY = gql`
+mutation UpdateCategory($data: CategoryInput!, $updateCategoryId: String!){
+  updateCategory(data: $data, id: $updateCategoryId) {
+    id
+    title
+    code
+    description
+    iconName
+    colorHexCode
+    createdAt
+    updatedAt
+    author {
+      fullName
+      email
+    }
+  }
+}
+`

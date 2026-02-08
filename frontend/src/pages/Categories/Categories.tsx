@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Plus, Tag, ArrowUpDown } from "lucide-react"
-import { useQuery } from "@apollo/client/react"
+import { useLazyQuery } from "@apollo/client/react"
 import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category"
 import { Button } from "@/components/ui/button"
 import { getIconByName } from "@/hooks/useIcons"
@@ -13,14 +13,11 @@ import { CategoryDialog } from "./components/CategoryDialog"
 
 export function Categories() {
     const handleGqlResponse = useGqlResponseHandler();
-    const [mostUsedCategory, setMostUsedCategory] = useState<Category>({ title: "Nenhuma", code: "", author: { email: "", fullName: "" }, colorHexCode: "", description: "", iconName: "undefined", transactions: [] });
-
-    const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(
-        LIST_ALL_CATEGORIES
+    const [categories, setCategories] = useState<Category[]>([])
+    const [mostUsedCategory, setMostUsedCategory] = useState<Category>({ id: "", title: "Nenhuma", code: "", author: { email: "", fullName: "" }, colorHexCode: "", description: "", iconName: "undefined", transactions: [] });
+    const [listAllCategories, { }] = useLazyQuery<{ listCategories: Category[] }>(
+        LIST_ALL_CATEGORIES, { fetchPolicy: "network-only" }
     );
-    error && handleGqlResponse({ type: "error", message: error.message });
-
-    const categories = data?.listCategories ?? [];
 
     const countTotalTransactionsAmount = () => {
         const arrayOfTransactionsAmount = categories.map((category) => category.transactions.length)
@@ -29,7 +26,7 @@ export function Categories() {
         return totalTransactionsAmount
     }
 
-    const calculeMostUsedCategory = () => {
+    const calculeMostUsedCategory = (categories: Category[]) => {
         let max = -1;
 
         categories.forEach((category) => {
@@ -40,9 +37,28 @@ export function Categories() {
         });
     }
 
+    const handleFetchCategories = async () => {
+        try {
+            const result = await listAllCategories();
+
+            if (result.error) {
+                throw result.error
+            }
+
+            if (result.data) {
+                console.log(result.data.listCategories)
+                setCategories(result.data.listCategories)
+                calculeMostUsedCategory(result.data.listCategories)
+            }
+        } catch (err) {
+            console.error(err);
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: handleFetchCategories });
+        }
+    }
+
     useEffect(() => {
-        calculeMostUsedCategory();
-    }, [data])
+        handleFetchCategories();
+    }, [])
 
     return (
         <div className="flex flex-col m-0 p-0 gap-8">
@@ -52,7 +68,7 @@ export function Categories() {
                     <span className="text-md leading-6 text-gray-600">Organize suas transações por categorias</span>
                 </div>
                 <CategoryDialog
-                    refetch={refetch}
+                    refetch={handleFetchCategories}
                 >
                     <Button className="w-fit py-2 px-3 gap-2">
                         <Plus /> Nova categoria
@@ -80,15 +96,12 @@ export function Categories() {
                 />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {!loading &&
+                {
                     categories.map((category) => (
                         <CategoryCard
-                            key={category.code}
-                            icon={getIconByName(category.iconName)}
-                            color={category.colorHexCode}
-                            title={category.title}
-                            description={category.description}
-                            itemsAmount={category.transactions.length}
+                            key={category.id}
+                            category={category}
+                            refetch={handleFetchCategories}
                         />
                     ))
                 }
