@@ -37,3 +37,9 @@ mutation UpdateCategory($data: CategoryInput!, $updateCategoryId: String!){
   }
 }
 `
+
+export const DELETE_CATEGORY = gql`
+mutation DeleteCategory($deleteCategoryId: String!){
+  deleteCategory(id: $deleteCategoryId)
+}
+`

@@ -5,6 +5,10 @@ import { CategoryDialog } from "../CategoryDialog"
 import { cn } from "@/lib/utils"
 import { Category } from "@/types"
 import { getIconByName } from "@/hooks/useIcons"
+import { DeleteDialog } from "@/components/DeleteDialog"
+import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
+import { apolloClient } from "@/lib/graphql/apollo"
+import { DELETE_CATEGORY } from "@/lib/graphql/mutations/Category"
 
 export type CategoryCardProps = {
     category: Category
@@ -16,6 +20,26 @@ const formattTransactionsAmount = (amount: number) => {
 }
 
 export function CategoryCard({ category, refetch }: CategoryCardProps) {
+    const handleGqlResponse = useGqlResponseHandler();
+
+    const deleteCategory = async () => {
+        try {
+
+            await apolloClient.mutate<{ data: { deleteCategory: boolean } }, { deleteCategoryId: string }>({
+                mutation: DELETE_CATEGORY,
+                variables: {
+                    deleteCategoryId: category.id
+                }
+            })
+
+            handleGqlResponse({ type: "success", message: "Categoria deletada com sucesso!", callBack: () => { } })
+            refetch();
+        } catch (error) {
+            console.error(error);
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => deleteCategory() })
+        }
+    }
+
     return (
         <div className="w-full h-[226px] flex flex-col justify-between items-start p-6 bg-white border-[1px] border-gray-200 rounded-xl">
             <div className="w-full h-fit flex justify-between items-start">
@@ -28,9 +52,15 @@ export function CategoryCard({ category, refetch }: CategoryCardProps) {
                     onChooseIcon={() => { }}
                 />
                 <div className="w-fit h-fit flex justify-center items-center gap-2">
-                    <Button variant="iconButton" size="icon" className="text-danger">
-                        <Trash />
-                    </Button>
+                    <DeleteDialog
+                        title={`Excluir categoria: ${category.title}`}
+                        description="Tem certeza de que quer excluir essa categoria? Esta ação não poderá ser desfeita!"
+                        handleConfirmDeletion={deleteCategory}
+                    >
+                        <Button variant="iconButton" size="icon" className="text-danger">
+                            <Trash />
+                        </Button>
+                    </DeleteDialog>
                     <CategoryDialog
                         category={category}
                         refetch={refetch}
