@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/auth"
 import { LogOut, Mail, User } from "lucide-react"
 import { useState } from "react"
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
+import { formatFullUserNameToAvatar } from "@/utils/textsFormatter"
 
 export function Profile() {
     const { user, logout, updateUser } = useAuthStore()
@@ -18,10 +19,10 @@ export function Profile() {
                 fullName: fullName
             })
             if (updateUserMutate) {
-                handleGqlResponse({ type: "success", message: "Usuário atualizado com sucesso!" })
+                handleGqlResponse({ type: "success", message: "Usuário atualizado com sucesso!", callBack: () => { } })
             }
         } catch (error: any) {
-            handleGqlResponse({ type: "error", message: `${error}` })
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => { } })
         }
     }
 
@@ -37,7 +38,7 @@ export function Profile() {
                 <div className="flex flex-col justify-center items-center gap-6">
                     <Avatar className="w-16 h-16">
                         <AvatarFallback className="bg-gray-300 text-gray-800 font-medium text-2xl">
-                            {`${user?.fullName?.split(" ")[0].charAt(0)}${user?.fullName?.split(" ")[1].charAt(0)}`}
+                            {formatFullUserNameToAvatar(user?.fullName)}
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col justify-center items-center p-0 m-0 gap-1">

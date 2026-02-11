@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/stores/auth"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { formatFullUserNameToAvatar } from "@/utils/textsFormatter"
 
 export function Header() {
     const { user, isAuthenticated } = useAuthStore()
@@ -58,7 +59,7 @@ export function Header() {
                             <div className="flex items-center gap-2">
                                 <Avatar>
                                     <AvatarFallback className="bg-gray-300 text-gray-800">
-                                        {`${user?.fullName?.split(" ")[0].charAt(0)}${user?.fullName?.split(" ")[1].charAt(0)}`}
+                                        {formatFullUserNameToAvatar(user?.fullName)}
                                     </AvatarFallback>
                                 </Avatar>
                             </div>
