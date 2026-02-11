@@ -29,7 +29,7 @@ export class CategoryService {
                 code: categoryCode,
                 description: data.description || "",
                 iconName: data.iconName,
-                colorHexCode: data.colorHexCode,
+                color: data.color,
                 authorId: authenticatedUserId
             }
         });
@@ -78,7 +78,7 @@ export class CategoryService {
                 code: newCategoryCode,
                 description: data.description || "",
                 iconName: data.iconName,
-                colorHexCode: data.colorHexCode,
+                color: data.color,
                 authorId: authenticatedUserId
             }
         });

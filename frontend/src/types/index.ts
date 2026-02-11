@@ -49,7 +49,7 @@ export interface Category {
     title: string
     description: string
     iconName: string
-    colorHexCode: string
+    color: string
     author: Author
     transactions: Transaction[]
 }
@@ -58,5 +58,5 @@ export interface CategoryInput {
     title: string
     description: string
     iconName: string,
-    colorHexCode: string
+    color: string
 }

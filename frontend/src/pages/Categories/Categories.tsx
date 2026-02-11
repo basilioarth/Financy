@@ -14,7 +14,7 @@ import { CategoryDialog } from "./components/CategoryDialog"
 export function Categories() {
     const handleGqlResponse = useGqlResponseHandler();
     const [categories, setCategories] = useState<Category[]>([])
-    const [mostUsedCategory, setMostUsedCategory] = useState<Category>({ id: "", title: "Nenhuma", code: "", author: { email: "", fullName: "" }, colorHexCode: "", description: "", iconName: "undefined", transactions: [] });
+    const [mostUsedCategory, setMostUsedCategory] = useState<Category>({ id: "", title: "Nenhuma", code: "", author: { email: "", fullName: "" }, color: "", description: "", iconName: "undefined", transactions: [] });
     const [listAllCategories, { }] = useLazyQuery<{ listCategories: Category[] }>(
         LIST_ALL_CATEGORIES, { fetchPolicy: "network-only" }
     );
@@ -90,7 +90,7 @@ export function Categories() {
                 />
                 <LabelCard
                     icon={getIconByName(mostUsedCategory.iconName)}
-                    iconColor={mostUsedCategory.colorHexCode === "" ? "text-gray-400" : `text-${mostUsedCategory.colorHexCode}-base`}
+                    iconColor={mostUsedCategory.color === "" ? "text-gray-400" : `text-${mostUsedCategory.color}-base`}
                     title={mostUsedCategory.title}
                     description="categoria mais utilizada"
                 />

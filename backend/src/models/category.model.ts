@@ -20,7 +20,7 @@ export class CategoryModel {
     iconName!: string
 
     @Field(() => String)
-    colorHexCode!: string
+    color!: string
 
     @Field(() => GraphQLISODateTime)
     createdAt!: Date

@@ -12,5 +12,5 @@ export class CategoryInput {
     iconName!: string
 
     @Field(() => String)
-    colorHexCode!: string
+    color!: string
 }

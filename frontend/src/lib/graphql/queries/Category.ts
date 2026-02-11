@@ -8,7 +8,7 @@ query ListAllCategories {
     title
     description
     iconName
-    colorHexCode
+    color
     author {
       email
       fullName

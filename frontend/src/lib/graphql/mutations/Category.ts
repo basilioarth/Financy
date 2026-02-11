@@ -8,7 +8,7 @@ mutation CreateCategory($data: CategoryInput!){
       code
       description
       iconName
-      colorHexCode
+      color
       createdAt
       updatedAt
       author {
@@ -27,7 +27,7 @@ mutation UpdateCategory($data: CategoryInput!, $updateCategoryId: String!){
     code
     description
     iconName
-    colorHexCode
+    color
     createdAt
     updatedAt
     author {

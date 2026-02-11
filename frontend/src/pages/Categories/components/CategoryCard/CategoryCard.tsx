@@ -45,9 +45,9 @@ export function CategoryCard({ category, refetch }: CategoryCardProps) {
             <div className="w-full h-fit flex justify-between items-start">
                 <CategoryIconContainer
                     name=""
-                    value={category.colorHexCode}
+                    value={category.color}
                     type="icon"
-                    color={category.colorHexCode}
+                    color={category.color}
                     icon={getIconByName(category.iconName)}
                     onChooseIcon={() => { }}
                 />
@@ -80,13 +80,13 @@ export function CategoryCard({ category, refetch }: CategoryCardProps) {
             <div className="w-full flex justify-between items-center">
                 <span className={cn(
                     "px-3 py-1 rounded-full text-sm font-medium",
-                    category.colorHexCode === "green" && "bg-green-light text-green-dark",
-                    category.colorHexCode === "blue" && "bg-blue-light text-blue-dark",
-                    category.colorHexCode === "purple" && "bg-purple-light text-purple-dark",
-                    category.colorHexCode === "pink" && "bg-pink-light text-pink-dark",
-                    category.colorHexCode === "red" && "bg-red-light text-red-dark",
-                    category.colorHexCode === "orange" && "bg-orange-light text-orange-dark",
-                    category.colorHexCode === "yellow" && "bg-yellow-light text-yellow-dark",
+                    category.color === "green" && "bg-green-light text-green-dark",
+                    category.color === "blue" && "bg-blue-light text-blue-dark",
+                    category.color === "purple" && "bg-purple-light text-purple-dark",
+                    category.color === "pink" && "bg-pink-light text-pink-dark",
+                    category.color === "red" && "bg-red-light text-red-dark",
+                    category.color === "orange" && "bg-orange-light text-orange-dark",
+                    category.color === "yellow" && "bg-yellow-light text-yellow-dark",
                 )}>{category.title}</span>
                 <span className="text-sm text-gray-600">{formattTransactionsAmount(category.transactions.length)}</span>
             </div>

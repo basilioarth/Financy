@@ -32,7 +32,7 @@ type CreateCategoryInput = {
     title: string
     description: string
     iconName: string
-    colorHexCode: string
+    color: string
     createdAt: string
     updatedAt: string
     author: {
@@ -47,7 +47,7 @@ type UpdateCategoryInput = {
     title: string
     description: string
     iconName: string
-    colorHexCode: string
+    color: string
     createdAt: string
     updatedAt: string
     author: {
@@ -87,7 +87,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
                             title: formData.title,
                             description: formData.description,
                             iconName: formData.iconName,
-                            colorHexCode: formData.color
+                            color: formData.color
                         },
                         updateCategoryId: category.id
                     }
@@ -102,7 +102,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
                             title: formData.title,
                             description: formData.description,
                             iconName: formData.iconName,
-                            colorHexCode: formData.color
+                            color: formData.color
                         }
                     }
                 });
@@ -123,7 +123,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
                 title: category.title,
                 description: category.description,
                 iconName: category.iconName,
-                color: category.colorHexCode
+                color: category.color
             })
         }
     }, [category, isOpen])
