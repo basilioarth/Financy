@@ -7,7 +7,6 @@ import { GqlUser } from "../graphql/decorators/user.decorator";
 import { User } from "@prisma/client";
 
 @Resolver(() => UserModel)
-@UseMiddleware(IsAuth)
 export class UserResolver {
     private userService = new UserService();
 
@@ -19,6 +18,7 @@ export class UserResolver {
     }
 
     @Mutation(() => UserModel)
+    @UseMiddleware(IsAuth)
     async updateUser(
         @GqlUser() user: User,
         @Arg('data', () => UpdateUserInput) data: UpdateUserInput
