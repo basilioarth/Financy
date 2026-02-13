@@ -37,7 +37,7 @@ export function Categories() {
         });
     }
 
-    const handleFetchCategories = async () => {
+    const fetchCategories = async () => {
         try {
             const result = await listAllCategories();
 
@@ -52,12 +52,12 @@ export function Categories() {
             }
         } catch (err) {
             console.error(err);
-            handleGqlResponse({ type: "error", message: `${err}`, callBack: handleFetchCategories });
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchCategories });
         }
     }
 
     useEffect(() => {
-        handleFetchCategories();
+        fetchCategories();
     }, [])
 
     return (
@@ -68,7 +68,7 @@ export function Categories() {
                     <span className="text-md leading-6 text-gray-600">Organize suas transações por categorias</span>
                 </div>
                 <CategoryDialog
-                    refetch={handleFetchCategories}
+                    refetch={fetchCategories}
                 >
                     <Button className="w-fit py-2 px-3 gap-2">
                         <Plus /> Nova categoria
@@ -101,7 +101,7 @@ export function Categories() {
                         <CategoryCard
                             key={category.id}
                             category={category}
-                            refetch={handleFetchCategories}
+                            refetch={fetchCategories}
                         />
                     ))
                 }

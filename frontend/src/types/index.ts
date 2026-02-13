@@ -35,12 +35,13 @@ export interface Transaction {
     type: string
     description: string
     date: string
-    value: string
+    value: number
     category: {
         title: string
         description: string
     }
     author: Author
+    createdAt: Date
 }
 
 export interface Category {
