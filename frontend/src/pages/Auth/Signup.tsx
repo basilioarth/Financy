@@ -4,9 +4,11 @@ import { FormLayout } from "@/components/FormLayout"
 import { FormField } from "@/components/FormField"
 import { validateName, validateEmail, validatePassword } from "@/components/FormField/utils"
 import { useAuthStore } from "@/stores/auth"
-import { toast } from "sonner"
+import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
 
 export function Signup() {
+    const handleGqlResponse = useGqlResponseHandler();
+
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -33,10 +35,10 @@ export function Signup() {
                 password: formData.password,
             })
             if (signupMutate) {
-                toast.success("Cadastro realizado com sucesso!")
+                handleGqlResponse({ type: "success", message: 'Cadastro realizado com sucesso!', callBack: () => { } });
             }
         } catch (error: any) {
-            toast.error("Erro ao realizar o cadastro")
+            handleGqlResponse({ type: "error", message: 'Erro ao realizar o cadastro', callBack: () => { } });
         } finally {
             setLoading(false)
         }

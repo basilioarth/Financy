@@ -3,9 +3,11 @@ import { FormField } from "@/components/FormField"
 import { UserRoundPlus, Mail, Lock } from "lucide-react"
 import { useState } from "react";
 import { useAuthStore } from "@/stores/auth";
-import { toast } from "sonner"
+import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler";
 
 export function Login() {
+    const handleGqlResponse = useGqlResponseHandler();
+
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
@@ -26,7 +28,7 @@ export function Login() {
             })
 
         } catch (error) {
-            toast.error("Falha ao realizar o login!")
+            handleGqlResponse({ type: "error", message: 'Usuário ou senha inválidos! Por favor, tente novamente', callBack: () => { } });
         } finally {
             setLoading(false)
         }

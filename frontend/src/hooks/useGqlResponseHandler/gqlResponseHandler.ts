@@ -37,22 +37,22 @@ export const useGqlResponseHandler = () => {
                     } catch (error) {
                         console.error(`Erro ao fazer o refresh automático da autenticação: ${error}`)
                         logout()
-                        toast.warning("Sua sessão expirou. Por favor, faça login novamente");
+                        toast.warning("Sua sessão expirou. Por favor, faça login novamente", { position: "bottom-center" })
                     } finally {
                         isRefreshing.current = false;
                     }
                 } else if (!message.includes("The operation was aborted")) {
-                    toast.error(message)
+                    toast.error(message, { position: "bottom-center" })
                 }
                 break
             case "success":
-                toast.success(message)
+                toast.success(message, { position: "bottom-center" })
                 break
             case "warning":
-                toast.warning(message)
+                toast.warning(message, { position: "bottom-center" })
                 break
             default:
-                toast.info(message)
+                toast.info(message, { position: "bottom-center" })
         }
     }
 
