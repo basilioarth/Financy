@@ -80,38 +80,68 @@ export function Signup() {
             navigateButtonLabel="Fazer login"
             navigateButtonTo="/login"
         >
-            <FormField
-                type="text"
-                label="Nome completo"
-                placeholder="Seu nome completo"
-                value={formData.name}
-                onChangeValue={(value) => handleChange("name", value)}
-                icon={User}
-                error={formDataErros.name}
-            />
+            <FormField.Container>
+                <FormField.Label label="Nome completo" error={formDataErros.name} />
+                <FormField.Content>
+                    <FormField.Icon icon={User} error={formDataErros.name} />
+                    <FormField.GenericInput
+                        type="text"
+                        placeholder="Seu nome completo"
+                        value={formData.name}
+                        onChangeValue={(value) => handleChange("name", value)}
+                        hasIcon={true}
+                        disabled={loading}
+                    />
+                </FormField.Content>
+            </FormField.Container>
 
-            <FormField
-                type="email"
-                label="E-mail"
-                placeholder="mail@example.com"
-                value={formData.email}
-                onChangeValue={(value) => handleChange("email", value)}
-                icon={Mail}
-                error={formDataErros.email}
-            />
+            <FormField.Container>
+                <FormField.Label label="E-mail" error={formDataErros.email} />
+                <FormField.Content>
+                    <FormField.Icon icon={Mail} error={formDataErros.email} />
+                    <FormField.GenericInput
+                        type="email"
+                        placeholder="mail@example.com"
+                        value={formData.email}
+                        onChangeValue={(value) => handleChange("email", value)}
+                        hasIcon={true}
+                        disabled={loading}
+                    />
+                </FormField.Content>
+            </FormField.Container>
 
-            <FormField
-                type={showPassword ? "text" : "password"}
-                label="Senha"
-                placeholder="Digite sua senha"
-                value={formData.password}
-                description="A senha deve ter no mínimo 8 caracteres"
-                onChangeValue={(value) => handleChange("password", value)}
-                icon={Lock}
-                error={formDataErros.password}
-                hidden={showPassword}
-                onChangeVisibility={(value) => setShowPassword(value)}
-            />
+            <FormField.Container>
+                <FormField.Label label="E-mail" error={formDataErros.email} />
+                <FormField.Content>
+                    <FormField.Icon icon={Mail} error={formDataErros.email} />
+                    <FormField.GenericInput
+                        type="email"
+                        placeholder="mail@example.com"
+                        value={formData.email}
+                        onChangeValue={(value) => handleChange("email", value)}
+                        hasIcon={true}
+                        disabled={loading}
+                    />
+                </FormField.Content>
+            </FormField.Container>
+
+            <FormField.Container>
+                <FormField.Label label="Senha" error={formDataErros.password} />
+                <FormField.Content>
+                    <FormField.Icon icon={Lock} error={formDataErros.password} />
+                    <FormField.PasswordInput
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Digite sua senha"
+                        value={formData.password}
+                        hasIcon={true}
+                        disabled={loading}
+                        hidden={showPassword}
+                        onChangeValue={(value) => handleChange("password", value)}
+                        onChangeVisibility={(value) => setShowPassword(value)}
+                    />
+                </FormField.Content>
+                <FormField.Description description="A senha deve ter no mínimo 8 caracteres" />
+            </FormField.Container>
         </FormLayout>
     )
 }

@@ -31,13 +31,15 @@ const buttonVariants = cva(
           "bg-transparent shadow-none text-green-dark",
         typeOutcome:
           "bg-transparent shadow-none text-red-dark",
+        typeSelectOption:
+          "bg-transparent gap-3 flex items-center justify-center",
         // destructive:
         //   "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         // outline:
         //   "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         // secondary:
         //   "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        // ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
       },
       size: {
         label: "text-base h-12 w-full px-4 py-3 rounded-lg",
@@ -46,7 +48,8 @@ const buttonVariants = cva(
         link: "text-sm leading-5 h-5 w-auto p-0 rounded-0",
         tab: "text-sm leading-5 h-5 w-auto p-0 rounded-0",
         tag: "text-sm font-medium",
-        type: "text-sm leading-5 h-5 w-auto p-0 rounded-0"
+        type: "text-sm leading-5 h-5 w-auto p-0 rounded-0",
+        select: "w-full text-base leading-[18px] text-gray-600"
         // sm: "h-8 rounded-md px-3 text-xs",
         // lg: "h-10 rounded-md px-8",
       },

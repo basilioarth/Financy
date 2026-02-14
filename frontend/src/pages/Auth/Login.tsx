@@ -50,28 +50,38 @@ export function Login() {
             navigateButtonLabel="Criar conta"
             navigateButtonTo="/signup"
         >
-            <FormField
-                type="email"
-                label="E-mail"
-                placeholder="mail@example.com"
-                value={formData.email}
-                onChangeValue={(value) => handleChange("email", value)}
-                icon={Mail}
-                error=""
-            />
+            <FormField.Container>
+                <FormField.Label label="E-mail" error="" />
+                <FormField.Content>
+                    <FormField.Icon icon={Mail} error="" />
+                    <FormField.GenericInput
+                        type="email"
+                        placeholder="mail@example.com"
+                        value={formData.email}
+                        onChangeValue={(value) => handleChange("email", value)}
+                        hasIcon={true}
+                        disabled={loading}
+                    />
+                </FormField.Content>
+            </FormField.Container>
 
-            <FormField
-                type={showPassword ? "text" : "password"}
-                label="Senha"
-                placeholder="Digite sua senha"
-                action={true}
-                value={formData.password}
-                onChangeValue={(value) => handleChange("password", value)}
-                icon={Lock}
-                error=""
-                hidden={showPassword}
-                onChangeVisibility={(value) => setShowPassword(value)}
-            />
+            <FormField.Container>
+                <FormField.Label label="E-mail" error="" />
+                <FormField.Content>
+                    <FormField.Icon icon={Lock} error="" />
+                    <FormField.PasswordInput
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Digite sua senha"
+                        value={formData.password}
+                        hasIcon={true}
+                        disabled={loading}
+                        hidden={showPassword}
+                        onChangeValue={(value) => handleChange("password", value)}
+                        onChangeVisibility={(value) => setShowPassword(value)}
+                    />
+                </FormField.Content>
+                <FormField.Action />
+            </FormField.Container>
         </FormLayout>
     )
 }

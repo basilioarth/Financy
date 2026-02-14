@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CircleArrowDown, CircleArrowUp, Plus, SquarePen, Trash } from "lucide-react";
 import { useLazyQuery } from "@apollo/client/react"
-import { Transaction } from "@/types";
+import { Category, Transaction } from "@/types";
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler";
 import { getIconByName } from "@/hooks/useIcons"
 import { LIST_ALL_TRANSACTIONS } from "@/lib/graphql/queries/Transaction";
@@ -14,16 +14,21 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { format, parseISO } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { CategoryIconContainer } from "../Categories/components/CategoryIconContainer";
 import { cn } from "@/lib/utils";
+import { TransactionDialog } from "./components/TransactionDialog";
+import { formatDate } from "@/utils/datesFormatter";
+import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category";
 
 export function Transactions() {
     const handleGqlResponse = useGqlResponseHandler();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
     const [listAllTransactions, { }] = useLazyQuery<{ listTransactions: Transaction[] }>(
         LIST_ALL_TRANSACTIONS, { fetchPolicy: "network-only" }
+    );
+    const [listAllCategories, { }] = useLazyQuery<{ listCategories: Category[] }>(
+        LIST_ALL_CATEGORIES, { fetchPolicy: "network-only" }
     );
 
     const fetchTransactions = async () => {
@@ -44,11 +49,22 @@ export function Transactions() {
         }
     }
 
-    const formatDate = (originalDate: string): string => {
-        const date = parseISO(originalDate);
-        const formattedDate = format(date, 'dd/MM/yy', { locale: ptBR });
+    const fetchCategories = async () => {
+        try {
+            const result = await listAllCategories();
 
-        return formattedDate
+            if (result.error) {
+                throw result.error
+            }
+
+            if (result.data) {
+                console.log(result.data.listCategories)
+                setAvailableCategories(result.data.listCategories)
+            }
+        } catch (err) {
+            console.error(err);
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchCategories });
+        }
     }
 
     const formatBills = (originalValue: number, type: string): string => {
@@ -61,6 +77,7 @@ export function Transactions() {
 
     useEffect(() => {
         fetchTransactions()
+        fetchCategories()
     }, [])
 
     return (
@@ -70,9 +87,14 @@ export function Transactions() {
                     <h1 className="text-2xl font-bold text-gray-800">Transações</h1>
                     <span className="text-md leading-6 text-gray-600">Gerencie todas as suas transações financeiras</span>
                 </div>
-                <Button className="w-fit py-2 px-3 gap-2">
-                    <Plus /> Nova transação
-                </Button>
+                <TransactionDialog
+                    availableCategories={availableCategories}
+                    refetch={fetchTransactions}
+                >
+                    <Button className="w-fit py-2 px-3 gap-2">
+                        <Plus /> Nova transação
+                    </Button>
+                </TransactionDialog>
             </header>
             {transactions.length !== 0 &&
                 <Table>
@@ -89,7 +111,7 @@ export function Transactions() {
                     <TableBody>
                         {
                             transactions.map((transaction) => (
-                                <TableRow>
+                                <TableRow key={transaction.value}>
                                     <TableCell className="text-left pl-6 text-base font-medium text-gray-800 flex justify-start items-center gap-4">
                                         <CategoryIconContainer
                                             name=""
@@ -102,7 +124,7 @@ export function Transactions() {
                                         {transaction.description}
                                     </TableCell>
                                     <TableCell className="text-sm text-gray-600">
-                                        {formatDate(`${transaction.createdAt}`)}
+                                        {formatDate(`${transaction.createdAt}`, "yy")}
                                     </TableCell>
                                     <TableCell>
                                         <Button variant="tagButton" size="tag" className={cn(

@@ -57,7 +57,8 @@ type UpdateCategoryInput = {
 }
 
 export const CategoryDialog = ({ category, children, refetch }: CategoryDialogProps) => {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const handleGqlResponse = useGqlResponseHandler();
 
     const [formData, setFormData] = useState({
@@ -78,6 +79,8 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
     }
 
     const handleSubmit = async () => {
+        setLoading(true);
+
         try {
             if (category) {
                 await apolloClient.mutate<UpdateCategoryInput, { data: CategoryInput, updateCategoryId: string }>({
@@ -115,6 +118,8 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
             console.error(error);
             handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleSubmit() })
         }
+
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -139,23 +144,34 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
                     <DialogDescription>Organize suas transações com categorias</DialogDescription>
                 </DialogHeader>
                 <FieldGroup className="gap-4">
-                    <FormField
-                        type="text"
-                        label="Título"
-                        placeholder="Ex. Alimentação"
-                        value={formData.title}
-                        onChangeValue={(value) => handleChange("title", value)}
-                        error=""
-                    />
-                    <FormField
-                        type="text"
-                        label="Descrição"
-                        placeholder="Descrição da categoria"
-                        value={formData.description}
-                        onChangeValue={(value) => handleChange("description", value)}
-                        error=""
-                        description="Opcional"
-                    />
+                    <FormField.Container>
+                        <FormField.Label label="Título" error="" />
+                        <FormField.Content>
+                            <FormField.GenericInput
+                                type="text"
+                                placeholder="Ex. Alimentação"
+                                value={formData.title}
+                                onChangeValue={(value) => handleChange("title", value)}
+                                hasIcon={false}
+                                disabled={loading}
+                            />
+                        </FormField.Content>
+                    </FormField.Container>
+
+                    <FormField.Container>
+                        <FormField.Label label="Descrição" error="" />
+                        <FormField.Content>
+                            <FormField.GenericInput
+                                type="text"
+                                placeholder="Descrição da categoria"
+                                value={formData.description}
+                                onChangeValue={(value) => handleChange("description", value)}
+                                hasIcon={false}
+                                disabled={loading}
+                            />
+                        </FormField.Content>
+                        <FormField.Description description="Opcional" />
+                    </FormField.Container>
                 </FieldGroup>
                 <div className="flex flex-col justify-start items-start gap-2">
                     <h2 className="text-sm text-gray-700 font-medium">Ícone</h2>

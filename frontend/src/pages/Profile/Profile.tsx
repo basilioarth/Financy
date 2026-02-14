@@ -10,6 +10,7 @@ import { formatFullUserNameToAvatar } from "@/utils/textsFormatter"
 
 export function Profile() {
     const { user, logout, updateUser } = useAuthStore()
+    const [loading, setLoading] = useState(false);
     const [fullName, setFullName] = useState(user?.fullName || "")
     const handleGqlResponse = useGqlResponseHandler();
 
@@ -27,7 +28,11 @@ export function Profile() {
     }
 
     const handleLogout = () => {
+        setLoading(true);
+
         logout()
+
+        setLoading(false);
     }
 
     return (
@@ -53,27 +58,36 @@ export function Profile() {
                 </div>
 
                 <FieldGroup className="gap-4">
-                    <FormField
-                        type="text"
-                        label="Nome completo"
-                        placeholder=""
-                        value={fullName}
-                        onChangeValue={(value) => setFullName(value)}
-                        icon={User}
-                        error=""
-                    />
+                    <FormField.Container>
+                        <FormField.Label label="Nome completo" error="" />
+                        <FormField.Content>
+                            <FormField.Icon icon={User} error="" />
+                            <FormField.GenericInput
+                                type="text"
+                                placeholder=""
+                                value={fullName}
+                                onChangeValue={(value) => setFullName(value)}
+                                hasIcon={true}
+                                disabled={loading}
+                            />
+                        </FormField.Content>
+                    </FormField.Container>
 
-                    <FormField
-                        type="email"
-                        label="E-mail"
-                        placeholder=""
-                        value={user ? user.email : ""}
-                        onChangeValue={() => { }}
-                        icon={Mail}
-                        error=""
-                        disabled={true}
-                        description="O e-mail não pode ser alterado"
-                    />
+                    <FormField.Container>
+                        <FormField.Label label="E-mail" error="" />
+                        <FormField.Content>
+                            <FormField.Icon icon={Mail} error="" />
+                            <FormField.GenericInput
+                                type="email"
+                                placeholder=""
+                                value={user ? user.email : ""}
+                                onChangeValue={() => { }}
+                                hasIcon={true}
+                                disabled={true}
+                            />
+                        </FormField.Content>
+                        <FormField.Description description="O e-mail não pode ser alterado" />
+                    </FormField.Container>
                 </FieldGroup>
 
                 <div className="flex flex-col justify-center items-center gap-4">
