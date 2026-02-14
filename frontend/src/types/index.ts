@@ -39,6 +39,8 @@ export interface Transaction {
     category: {
         title: string
         description: string
+        color: string
+        iconName: string
     }
     author: Author
     createdAt: Date

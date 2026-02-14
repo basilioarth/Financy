@@ -9,9 +9,11 @@ query ListAllTransactions{
     date
     value
     category {
+      id
       title
       description
-      id
+      color
+      iconName
     }
     createdAt
     updatedAt

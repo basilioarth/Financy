@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { CircleArrowDown, CircleArrowUp, Plus, SquarePen, Trash } from "lucide-react";
 import { useLazyQuery } from "@apollo/client/react"
 import { Transaction } from "@/types";
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler";
+import { getIconByName } from "@/hooks/useIcons"
 import { LIST_ALL_TRANSACTIONS } from "@/lib/graphql/queries/Transaction";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,8 @@ import {
 } from "@/components/ui/table"
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { CategoryIconContainer } from "../Categories/components/CategoryIconContainer";
+import { cn } from "@/lib/utils";
 
 export function Transactions() {
     const handleGqlResponse = useGqlResponseHandler();
@@ -43,7 +46,7 @@ export function Transactions() {
 
     const formatDate = (originalDate: string): string => {
         const date = parseISO(originalDate);
-        const formattedDate = format(date, 'dd/MM/yyyy', { locale: ptBR });
+        const formattedDate = format(date, 'dd/MM/yy', { locale: ptBR });
 
         return formattedDate
     }
@@ -79,7 +82,7 @@ export function Transactions() {
                             <TableHead>Data</TableHead>
                             <TableHead>Categoria</TableHead>
                             <TableHead>Tipo</TableHead>
-                            <TableHead>Valor</TableHead>
+                            <TableHead className="text-right">Valor</TableHead>
                             <TableHead className="text-right pr-6">Ações</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -87,12 +90,56 @@ export function Transactions() {
                         {
                             transactions.map((transaction) => (
                                 <TableRow>
-                                    <TableCell className="text-left pl-6 text-base font-medium text-gray-800">{transaction.description}</TableCell>
-                                    <TableCell className="text-sm text-gray-600">{formatDate(`${transaction.createdAt}`)}</TableCell>
-                                    <TableCell>{transaction.category.title}</TableCell>
-                                    <TableCell>{transaction.type}</TableCell>
-                                    <TableCell className="text-right text-sm font-semibold text-gray-800">{formatBills(transaction.value, transaction.type)}</TableCell>
-                                    <TableCell className="text-right pr-6">Deletar/Editar</TableCell>
+                                    <TableCell className="text-left pl-6 text-base font-medium text-gray-800 flex justify-start items-center gap-4">
+                                        <CategoryIconContainer
+                                            name=""
+                                            value={transaction.category.color}
+                                            type="icon"
+                                            color={transaction.category.color}
+                                            icon={getIconByName(transaction.category.iconName)}
+                                            onChooseIcon={() => { }}
+                                        />
+                                        {transaction.description}
+                                    </TableCell>
+                                    <TableCell className="text-sm text-gray-600">
+                                        {formatDate(`${transaction.createdAt}`)}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button variant="tagButton" size="tag" className={cn(
+                                            (transaction.category.color === "green") && "bg-green-light text-green-dark",
+                                            (transaction.category.color === "blue") && "bg-blue-light text-blue-dark",
+                                            (transaction.category.color === "purple") && "bg-purple-light text-purple-dark",
+                                            (transaction.category.color === "pink") && "bg-pink-light text-pink-dark",
+                                            (transaction.category.color === "red") && "bg-red-light text-red-dark",
+                                            (transaction.category.color === "orange") && "bg-orange-light text-orange-dark",
+                                            (transaction.category.color === "yellow") && "bg-yellow-light text-yellow-dark",
+                                        )}>
+                                            {transaction.category.title}
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell className={cn(
+                                        "flex justify-center items-center gap-2 font-medium",
+                                        transaction.type === "Entrada" && "text-green-dark",
+                                        transaction.type === "Saída" && "text-red-dark"
+                                    )}>
+                                        {transaction.type === "Entrada" ?
+                                            <CircleArrowUp className="text-green-base h-4 w-4" />
+                                            :
+                                            <CircleArrowDown className="text-red-base h-4 w-4" />
+                                        }
+                                        {transaction.type}
+                                    </TableCell>
+                                    <TableCell className="text-right text-sm font-semibold text-gray-800">
+                                        {formatBills(transaction.value, transaction.type)}
+                                    </TableCell>
+                                    <TableCell className="text-right pr-6 flex justify-end items-center gap-2">
+                                        <Button variant="iconButton" size="icon" className="text-danger">
+                                            <Trash />
+                                        </Button>
+                                        <Button variant="iconButton" size="icon">
+                                            <SquarePen />
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))
                         }
