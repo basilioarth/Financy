@@ -111,7 +111,7 @@ export function Transactions() {
                     <TableBody>
                         {
                             transactions.map((transaction) => (
-                                <TableRow key={transaction.value}>
+                                <TableRow key={transaction.id}>
                                     <TableCell className="text-left pl-6 text-base font-medium text-gray-800 flex justify-start items-center gap-4">
                                         <CategoryIconContainer
                                             name=""
@@ -124,7 +124,7 @@ export function Transactions() {
                                         {transaction.description}
                                     </TableCell>
                                     <TableCell className="text-sm text-gray-600">
-                                        {formatDate(`${transaction.createdAt}`, "yy")}
+                                        {formatDate(`${transaction.date}`, "yy")}
                                     </TableCell>
                                     <TableCell>
                                         <Button variant="tagButton" size="tag" className={cn(
@@ -158,9 +158,15 @@ export function Transactions() {
                                         <Button variant="iconButton" size="icon" className="text-danger">
                                             <Trash />
                                         </Button>
-                                        <Button variant="iconButton" size="icon">
-                                            <SquarePen />
-                                        </Button>
+                                        <TransactionDialog
+                                            transaction={transaction}
+                                            availableCategories={availableCategories}
+                                            refetch={fetchTransactions}
+                                        >
+                                            <Button variant="iconButton" size="icon">
+                                                <SquarePen />
+                                            </Button>
+                                        </TransactionDialog>
                                     </TableCell>
                                 </TableRow>
                             ))

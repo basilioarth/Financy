@@ -32,9 +32,10 @@ export interface UpdateUserInput {
 }
 
 export interface Transaction {
+    id: string
     type: string
     description: string
-    date: string
+    date: Date
     value: number
     category: {
         title: string

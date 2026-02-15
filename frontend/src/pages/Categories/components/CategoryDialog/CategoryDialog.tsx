@@ -26,7 +26,7 @@ type CategoryDialogProps = {
     refetch: () => void
 }
 
-type CreateCategoryInput = {
+type CreateCategoryOutput = {
     id: string
     code: string
     title: string
@@ -41,7 +41,7 @@ type CreateCategoryInput = {
     }
 }
 
-type UpdateCategoryInput = {
+type UpdateCategoryOutput = {
     id: string
     code: string
     title: string
@@ -83,7 +83,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
 
         try {
             if (category) {
-                await apolloClient.mutate<UpdateCategoryInput, { data: CategoryInput, updateCategoryId: string }>({
+                await apolloClient.mutate<UpdateCategoryOutput, { data: CategoryInput, updateCategoryId: string }>({
                     mutation: UPDATE_CATEGORY,
                     variables: {
                         data: {
@@ -98,7 +98,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
 
                 handleGqlResponse({ type: "success", message: "Categoria atualizada com sucesso!", callBack: () => { } })
             } else {
-                await apolloClient.mutate<CreateCategoryInput, { data: CategoryInput }>({
+                await apolloClient.mutate<CreateCategoryOutput, { data: CategoryInput }>({
                     mutation: CREATE_CATEGORY,
                     variables: {
                         data: {

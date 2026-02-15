@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Dialog,
     DialogClose,
@@ -8,13 +8,17 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Category, Transaction } from "@/types"
+import { Author, Category, Transaction } from "@/types"
 import { FieldGroup } from "@/components/ui/field"
 import { FormField } from "@/components/FormField"
 import { Button } from "@/components/ui/button"
 import { formatDate } from "@/utils/datesFormatter"
 import { CircleArrowDown, CircleArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
+import { apolloClient } from "@/lib/graphql/apollo"
+import { StringDecoder } from "string_decoder"
+import { CREATE_TRANSACTION, UPDATE_TRANSACTION } from "@/lib/graphql/mutations/Transaction"
 
 type TransactionDialogProps = {
     transaction?: Transaction
@@ -31,6 +35,24 @@ type TransactionInput = {
     category: string
 }
 
+type CreateTransactionInput = {
+    type: string
+    description: string
+    date: Date
+    value: number
+    categoryId: string
+}
+
+type CreateTransactionOutput = {
+    id: string
+    type: string
+    description: string
+    date: Date
+    value: number
+    category: Category
+    author: Author
+}
+
 export function TransactionDialog({ transaction, availableCategories, children, refetch }: TransactionDialogProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -41,6 +63,7 @@ export function TransactionDialog({ transaction, availableCategories, children, 
         value: 0.0,
         category: ""
     });
+    const handleGqlResponse = useGqlResponseHandler()
 
     const clearInputs = () => {
         setFormData(prev => ({ ...prev, ["type"]: "" }));
@@ -70,15 +93,71 @@ export function TransactionDialog({ transaction, availableCategories, children, 
         setFormData(prev => ({ ...prev, ["category"]: value }));
     }
 
-    const handleSubmit = () => {
+    const getCategoryIdByTitle = (title: string) => {
+        return availableCategories.filter((category) => category.title == title)[0]
+    }
+
+    const handleSubmit = async () => {
         setLoading(true);
 
-        console.log(formData)
-        clearInputs();
-        refetch();
+        try {
+            if (transaction) {
+                await apolloClient.mutate<CreateTransactionOutput, { data: CreateTransactionInput, id: string }>({
+                    mutation: UPDATE_TRANSACTION,
+                    variables: {
+                        data: {
+                            type: formData.type,
+                            description: formData.description,
+                            date: formData.date,
+                            value: formData.value,
+                            categoryId: getCategoryIdByTitle(formData.category).id
+                        },
+                        id: transaction.id
+                    }
+                })
+
+                handleGqlResponse({ type: "success", message: "Transação atualizada com sucesso!", callBack: () => { } })
+            } else {
+                await apolloClient.mutate<CreateTransactionOutput, { data: CreateTransactionInput }>({
+                    mutation: CREATE_TRANSACTION,
+                    variables: {
+                        data: {
+                            type: formData.type,
+                            description: formData.description,
+                            date: formData.date,
+                            value: formData.value,
+                            categoryId: getCategoryIdByTitle(formData.category).id
+                        }
+                    }
+                })
+
+                handleGqlResponse({ type: "success", message: "Transação criada com sucesso!", callBack: () => { } })
+            }
+            clearInputs();
+            refetch();
+        } catch (error) {
+            console.error(error);
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleSubmit() })
+        }
 
         setLoading(false);
     }
+
+    const isFormFullFilled = () => {
+        return (formData.type != "" && formData.description != "" && formData.value != 0.0 && formData.category != "")
+    }
+
+    useEffect(() => {
+        if (isOpen && transaction) {
+            setFormData({
+                type: transaction.type,
+                description: transaction.description,
+                date: transaction.date,
+                value: transaction.value,
+                category: transaction.category.title
+            })
+        }
+    }, [transaction, isOpen])
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -142,7 +221,7 @@ export function TransactionDialog({ transaction, availableCategories, children, 
                             <FormField.Content>
                                 <FormField.DateInput
                                     placeholder="Selecione"
-                                    value={formatDate(formData.date.toISOString(), "yyyy")}
+                                    value={formData.date instanceof Date ? formatDate(formData.date.toISOString(), "yyyy") : formatDate(formData.date, "yyyy")}
                                     disabled={loading}
                                     date={formData.date}
                                     onChangeValue={(value) => { value instanceof Date && handleChangeDate(value) }}
@@ -176,7 +255,7 @@ export function TransactionDialog({ transaction, availableCategories, children, 
                     </FormField.Container>
                 </FieldGroup>
                 <DialogClose asChild>
-                    <Button onClick={() => handleSubmit()}>
+                    <Button onClick={() => handleSubmit()} disabled={loading || !isFormFullFilled()}>
                         Salvar
                     </Button>
                 </DialogClose>

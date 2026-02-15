@@ -34,7 +34,7 @@ export const FormFieldDropDownInput = ({ placeholder, value, disabled, options, 
                 )}
             </button>
             {showingOptions &&
-                <div className="absolute w-full bg-white rounded-xl max-h-[200px] overflow-y-scroll overflow-x-clip">
+                <div className="absolute w-full bg-white rounded-xl max-h-[200px] overflow-y-scroll overflow-x-clip z-50">
                     {
                         options.map((option) => (
                             <div
