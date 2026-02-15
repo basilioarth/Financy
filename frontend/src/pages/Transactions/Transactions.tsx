@@ -19,6 +19,10 @@ import { cn } from "@/lib/utils";
 import { TransactionDialog } from "./components/TransactionDialog";
 import { formatDate } from "@/utils/datesFormatter";
 import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category";
+import { DeleteDialog } from "@/components/DeleteDialog";
+import { apolloClient } from "@/lib/graphql/apollo";
+import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transaction";
+import { formatCurrencyValue } from "@/utils/currencyFormatter";
 
 export function Transactions() {
     const handleGqlResponse = useGqlResponseHandler();
@@ -67,11 +71,20 @@ export function Transactions() {
         }
     }
 
-    const formatBills = (originalValue: number, type: string): string => {
-        if (type === "Saída") {
-            return `- R$ ${originalValue}`
-        } else {
-            return `R$ ${originalValue}`
+    const handleDeleteTransaction = async (id: string) => {
+        try {
+            await apolloClient.mutate<{ data: { deleteTransaction: boolean } }, { deleteTransactionId: string }>({
+                mutation: DELETE_TRANSACTION,
+                variables: {
+                    deleteTransactionId: id
+                }
+            })
+
+            handleGqlResponse({ type: "success", message: "Transação deletada com sucesso!", callBack: () => { } })
+            fetchTransactions();
+        } catch (error) {
+            console.error(error);
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleDeleteTransaction(id) })
         }
     }
 
@@ -152,12 +165,18 @@ export function Transactions() {
                                         {transaction.type}
                                     </TableCell>
                                     <TableCell className="text-right text-sm font-semibold text-gray-800">
-                                        {formatBills(transaction.value, transaction.type)}
+                                        {transaction.type == "Saída" ? `- ${formatCurrencyValue(transaction.value)}` : formatCurrencyValue(transaction.value)}
                                     </TableCell>
                                     <TableCell className="text-right pr-6 flex justify-end items-center gap-2">
-                                        <Button variant="iconButton" size="icon" className="text-danger">
-                                            <Trash />
-                                        </Button>
+                                        <DeleteDialog
+                                            title={`Excluir transação: ${transaction.description}`}
+                                            description="Tem certeza de que quer excluir essa transação? Esta ação não poderá ser desfeita!"
+                                            handleConfirmDeletion={() => handleDeleteTransaction(transaction.id)}
+                                        >
+                                            <Button variant="iconButton" size="icon" className="text-danger">
+                                                <Trash />
+                                            </Button>
+                                        </DeleteDialog>
                                         <TransactionDialog
                                             transaction={transaction}
                                             availableCategories={availableCategories}
