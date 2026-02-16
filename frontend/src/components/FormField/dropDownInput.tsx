@@ -22,6 +22,7 @@ export const FormFieldDropDownInput = ({ placeholder, value, disabled, options, 
                 value={value}
                 className={"pr-10 cursor-pointer caret-transparent"}
                 disabled={disabled}
+                readOnly
             />
             <button
                 type="button"
@@ -34,7 +35,7 @@ export const FormFieldDropDownInput = ({ placeholder, value, disabled, options, 
                 )}
             </button>
             {showingOptions &&
-                <div className="absolute w-full bg-white rounded-xl max-h-[200px] overflow-y-scroll overflow-x-clip z-50">
+                <div className="absolute w-full bg-white rounded-xl max-h-[200px] overflow-y-auto overflow-x-clip z-50">
                     {
                         options.map((option) => (
                             <div

@@ -66,7 +66,7 @@ export function Login() {
             </FormField.Container>
 
             <FormField.Container>
-                <FormField.Label label="E-mail" error="" />
+                <FormField.Label label="Senha" error="" />
                 <FormField.Content>
                     <FormField.Icon icon={Lock} error="" />
                     <FormField.PasswordInput

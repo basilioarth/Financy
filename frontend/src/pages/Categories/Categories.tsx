@@ -46,7 +46,6 @@ export function Categories() {
             }
 
             if (result.data) {
-                console.log(result.data.listCategories)
                 setCategories(result.data.listCategories)
                 calculeMostUsedCategory(result.data.listCategories)
             }

@@ -5,12 +5,15 @@ import App from './App.tsx'
 import { BrowserRouter } from "react-router-dom"
 import { ApolloProvider } from "@apollo/client/react"
 import { apolloClient } from "@/lib/graphql/apollo.ts"
+import { NuqsAdapter } from 'nuqs/adapters/react'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ApolloProvider client={apolloClient}>
       <BrowserRouter>
-        <App />
+        <NuqsAdapter>
+          <App />
+        </NuqsAdapter>
       </BrowserRouter>
     </ApolloProvider>
   </StrictMode>

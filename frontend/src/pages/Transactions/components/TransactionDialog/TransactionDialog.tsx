@@ -17,7 +17,6 @@ import { CircleArrowDown, CircleArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
 import { apolloClient } from "@/lib/graphql/apollo"
-import { StringDecoder } from "string_decoder"
 import { CREATE_TRANSACTION, UPDATE_TRANSACTION } from "@/lib/graphql/mutations/Transaction"
 
 type TransactionDialogProps = {
@@ -224,6 +223,8 @@ export function TransactionDialog({ transaction, availableCategories, children, 
                                     value={formData.date instanceof Date ? formatDate(formData.date.toISOString(), "yyyy") : formatDate(formData.date, "yyyy")}
                                     disabled={loading}
                                     date={formData.date}
+                                    mode="default"
+                                    hasSelectionChavron={false}
                                     onChangeValue={(value) => { value instanceof Date && handleChangeDate(value) }}
                                 />
                             </FormField.Content>

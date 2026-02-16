@@ -23,11 +23,27 @@ import { DeleteDialog } from "@/components/DeleteDialog";
 import { apolloClient } from "@/lib/graphql/apollo";
 import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transaction";
 import { formatCurrencyValue } from "@/utils/currencyFormatter";
+import { format } from 'date-fns';
+import { ptBR } from "date-fns/locale";
+import { TransactionFilters } from "./components/TransactionFilters";
+import { useQueryStates, parseAsString } from 'nuqs';
 
 export function Transactions() {
+    const [searchParams] = useQueryStates({
+        description: parseAsString.withDefault(''),
+        type: parseAsString.withDefault(''),
+        category: parseAsString.withDefault(''),
+        period: parseAsString.withDefault('')
+    });
+    const { description, type, category, period } = searchParams;
+
     const handleGqlResponse = useGqlResponseHandler();
+    const [dateFilter, setDateFilter] = useState<Date>();
+
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const [listAllTransactions, { }] = useLazyQuery<{ listTransactions: Transaction[] }>(
         LIST_ALL_TRANSACTIONS, { fetchPolicy: "network-only" }
     );
@@ -35,7 +51,14 @@ export function Transactions() {
         LIST_ALL_CATEGORIES, { fetchPolicy: "network-only" }
     );
 
+    const handleChangePeriodFilter = (date: Date) => {
+        setDateFilter(date);
+        const formattedDateToPeriod = format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
+    }
+
     const fetchTransactions = async () => {
+        setLoading(true);
+
         try {
             const result = await listAllTransactions();
 
@@ -44,16 +67,19 @@ export function Transactions() {
             }
 
             if (result.data) {
-                console.log(result.data.listTransactions)
                 setTransactions(result.data.listTransactions)
             }
         } catch (err) {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchTransactions });
         }
+
+        setLoading(false);
     }
 
     const fetchCategories = async () => {
+        setLoading(true);
+
         try {
             const result = await listAllCategories();
 
@@ -62,16 +88,19 @@ export function Transactions() {
             }
 
             if (result.data) {
-                console.log(result.data.listCategories)
                 setAvailableCategories(result.data.listCategories)
             }
         } catch (err) {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchCategories });
         }
+
+        setLoading(false);
     }
 
     const handleDeleteTransaction = async (id: string) => {
+        setLoading(true);
+
         try {
             await apolloClient.mutate<{ data: { deleteTransaction: boolean } }, { deleteTransactionId: string }>({
                 mutation: DELETE_TRANSACTION,
@@ -86,12 +115,22 @@ export function Transactions() {
             console.error(error);
             handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleDeleteTransaction(id) })
         }
+
+        setLoading(false);
     }
 
     useEffect(() => {
-        fetchTransactions()
         fetchCategories()
     }, [])
+
+    useEffect(() => {
+        fetchTransactions()
+        console.log("Filtros atualizados:")
+        console.log(`Description: ${description}`)
+        console.log(`Type: ${type}`)
+        console.log(`Category: ${category}`)
+        console.log(`Period: ${period}`)
+    }, [description, type, category, period])
 
     return (
         <div className="flex flex-col m-0 p-0 gap-8">
@@ -109,6 +148,7 @@ export function Transactions() {
                     </Button>
                 </TransactionDialog>
             </header>
+            <TransactionFilters availableCategories={availableCategories} />
             {transactions.length !== 0 &&
                 <Table>
                     <TableHeader>

@@ -111,21 +111,6 @@ export function Signup() {
             </FormField.Container>
 
             <FormField.Container>
-                <FormField.Label label="E-mail" error={formDataErros.email} />
-                <FormField.Content>
-                    <FormField.Icon icon={Mail} error={formDataErros.email} />
-                    <FormField.GenericInput
-                        type="email"
-                        placeholder="mail@example.com"
-                        value={formData.email}
-                        onChangeValue={(value) => handleChange("email", value)}
-                        hasIcon={true}
-                        disabled={loading}
-                    />
-                </FormField.Content>
-            </FormField.Container>
-
-            <FormField.Container>
                 <FormField.Label label="Senha" error={formDataErros.password} />
                 <FormField.Content>
                     <FormField.Icon icon={Lock} error={formDataErros.password} />
