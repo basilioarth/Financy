@@ -55,12 +55,17 @@ type Mutation {
   updateUser(data: UpdateUserInput!): UserModel!
 }
 
+type PaginatedTransactions {
+  items: [TransactionModel!]!
+  totalCount: Float!
+}
+
 type Query {
   getCategory(id: String!): CategoryModel!
   getTransaction(id: String!): TransactionModel!
   getUser(email: String!): UserModel!
   listCategories: [CategoryModel!]!
-  listTransactions(filters: TransactionFilters): [TransactionModel!]!
+  listTransactions(filters: TransactionFilters): PaginatedTransactions!
   listUsers: [UserModel!]!
 }
 
@@ -71,7 +76,9 @@ input RefreshAuthInput {
 input TransactionFilters {
   categoryId: String
   description: String
+  limit: Float
   month: Float
+  page: Float
   type: String
   year: Float
 }

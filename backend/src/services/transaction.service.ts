@@ -56,12 +56,26 @@ export class TransactionService {
             };
         }
 
-        return prismaClient.transaction.findMany({
-            where,
-            orderBy: {
-                date: 'desc'
-            }
-        });
+        const page = filters.page || 1;
+        const limit = filters.limit || 10;
+        const skip = (page - 1) * limit;
+
+        const [items, totalCount] = await Promise.all([
+            prismaClient.transaction.findMany({
+                where,
+                skip,
+                take: limit,
+                orderBy: {
+                    date: 'desc'
+                }
+            }),
+            prismaClient.transaction.count({ where })
+        ]);
+
+        return {
+            items,
+            totalCount
+        };
     }
 
     async getTransactionById(id: string, authenticatedUserId: string) {

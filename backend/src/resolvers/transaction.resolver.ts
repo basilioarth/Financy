@@ -5,7 +5,7 @@ import { GqlUser } from "../graphql/decorators/user.decorator";
 import { User } from "@prisma/client";
 import { UserModel } from "../models/user.model";
 import { UserService } from "../services/user.service";
-import { TransactionModel } from "../models/transaction.model";
+import { TransactionModel, PaginatedTransactions } from "../models/transaction.model";
 import { TransactionService } from "../services/transaction.service";
 import { CategoryModel } from "../models/category.model";
 import { CategoryService } from "../services/category.service";
@@ -52,12 +52,12 @@ export class TransactionResolver {
         return this.transactionService.getTransactionById(id, user.id);
     }
 
-    @Query(() => [TransactionModel])
+    @Query(() => PaginatedTransactions)
     async listTransactions(
         @GqlUser() user: User,
         @Arg('filters', () => TransactionFilters, { nullable: true }) filters?: TransactionFilters
-    ): Promise<TransactionModel[]> {
-        return this.transactionService.listTransactions(user.id, filters);
+    ): Promise<PaginatedTransactions> {
+        return this.transactionService.listTransactions(user.id, filters || {});
     };
 
     @FieldResolver(() => CategoryModel)

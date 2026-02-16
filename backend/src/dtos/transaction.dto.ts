@@ -34,4 +34,10 @@ export class TransactionFilters {
 
     @Field(() => Number, { nullable: true })
     year?: number
+
+    @Field(() => Number, { nullable: true })
+    page?: number
+
+    @Field(() => Number, { nullable: true })
+    limit?: number
 }

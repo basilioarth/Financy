@@ -37,3 +37,12 @@ export class TransactionModel {
     @Field(() => UserModel, { nullable: true })
     author?: UserModel
 }
+
+@ObjectType()
+export class PaginatedTransactions {
+    @Field(() => [TransactionModel])
+    items!: TransactionModel[]
+
+    @Field(() => Number)
+    totalCount!: number
+}

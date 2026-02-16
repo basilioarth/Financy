@@ -10,6 +10,7 @@ import {
     Table,
     TableBody,
     TableCell,
+    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -24,8 +25,9 @@ import { apolloClient } from "@/lib/graphql/apollo";
 import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transaction";
 import { formatCurrencyValue } from "@/utils/currencyFormatter";
 import { TransactionFilters } from "./components/TransactionFilters";
-import { useQueryStates, parseAsString } from 'nuqs';
+import { useQueryStates, parseAsString, parseAsInteger } from 'nuqs';
 import { NotFound } from "@/components/NotFound";
+import { Pagination } from "@/components/ui/pagination";
 
 
 interface ListTransactionsVariables {
@@ -34,6 +36,8 @@ interface ListTransactionsVariables {
     categoryId?: string | null;
     month?: number | null;
     year?: number | null;
+    page?: number | null;
+    limit?: number | null;
 }
 
 export function Transactions() {
@@ -41,16 +45,24 @@ export function Transactions() {
         description: parseAsString.withDefault(''),
         type: parseAsString.withDefault(''),
         category: parseAsString.withDefault(''),
-        period: parseAsString.withDefault('')
+        period: parseAsString.withDefault(''),
+        page: parseAsInteger.withDefault(1)
+    }, {
+        history: 'push'
     });
-    const { description, type, category, period } = searchParams;
+    const { description, type, category, period, page } = searchParams;
+    const [, setSearchParams] = useQueryStates({
+        page: parseAsInteger.withDefault(1)
+    }, { history: 'push' });
 
     const handleGqlResponse = useGqlResponseHandler();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
     const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const LIMIT = 10;
 
-    const [listAllTransactions, { }] = useLazyQuery<{ listTransactions: Transaction[] }, { filters: ListTransactionsVariables }>(
+    const [listAllTransactions, { }] = useLazyQuery<{ listTransactions: { items: Transaction[], totalCount: number } }, { filters: ListTransactionsVariables }>(
         LIST_ALL_TRANSACTIONS, { fetchPolicy: "network-only" }
     );
     const [listAllCategories, { }] = useLazyQuery<{ listCategories: Category[] }>(
@@ -78,7 +90,9 @@ export function Transactions() {
                         type: type || null,
                         categoryId: categoryId || null,
                         month: month || null,
-                        year: year || null
+                        year: year || null,
+                        page: page,
+                        limit: LIMIT
                     },
                 }
             });
@@ -88,7 +102,8 @@ export function Transactions() {
             }
 
             if (result.data) {
-                setTransactions(result.data.listTransactions)
+                setTransactions(result.data.listTransactions.items)
+                setTotalCount(result.data.listTransactions.totalCount)
             }
         } catch (err) {
             console.error(err);
@@ -146,7 +161,7 @@ export function Transactions() {
 
     useEffect(() => {
         fetchTransactions()
-    }, [description, type, category, period])
+    }, [description, type, category, period, page])
 
     return (
         <div className="flex flex-col m-0 p-0 gap-8">
@@ -247,6 +262,22 @@ export function Transactions() {
                             ))
                         }
                     </TableBody>
+                    {totalCount > 0 && (
+                        <TableFooter className="py-5 px-6">
+                            <TableRow>
+                                <TableCell colSpan={4} className="text-left pl-6">
+                                    {Math.min(((page || 1) - 1) * 10 + 1, totalCount)} a {Math.min((page || 1) * 10, totalCount)} | {totalCount} resultados
+                                </TableCell>
+                                <TableCell colSpan={2} className="text-right pr-6">
+                                    <Pagination
+                                        currentPage={page || 1}
+                                        totalPages={Math.ceil(totalCount / 10)}
+                                        onPageChange={(newPage) => setSearchParams({ page: newPage })}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    )}
                 </Table>
             }
             {transactions.length === 0 &&
