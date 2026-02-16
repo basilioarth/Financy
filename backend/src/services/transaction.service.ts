@@ -1,5 +1,5 @@
 import { prismaClient } from "../../prisma/prisma";
-import { TransactionInput } from "../dtos/transaction.dto";
+import { TransactionFilters, TransactionInput } from "../dtos/transaction.dto";
 
 export class TransactionService {
 
@@ -16,10 +16,50 @@ export class TransactionService {
         });
     }
 
-    async listTransactions(authenticatedUserId: string) {
+    async listTransactions(
+        authenticatedUserId: string,
+        filters: TransactionFilters
+    ) {
+        // Construir o objeto where dinamicamente
+        const where: any = {
+            authorId: authenticatedUserId
+        };
+
+        // Filtro por descrição (busca parcial, case-insensitive)
+        if (filters.description) {
+            where.description = {
+                contains: filters.description
+            };
+        }
+
+        // Filtro por tipo (exato)
+        if (filters.type) {
+            where.type = filters.type;
+        }
+
+        // Filtro por categoria (exato, por ID)
+        if (filters.categoryId) {
+            where.categoryId = filters.categoryId;
+        }
+
+        // Filtro por período (mês e ano)
+        if (filters.month && filters.year) {
+            // Data de início: primeiro dia do mês às 00:00:00
+            const startDate = new Date(filters.year, filters.month - 1, 1);
+
+            // Data de fim: primeiro dia do próximo mês às 00:00:00
+            const endDate = new Date(filters.year, filters.month, 1);
+
+            where.date = {
+                gte: startDate, // Maior ou igual à data de início
+                lt: endDate     // Menor que a data de fim
+            };
+        }
+
         return prismaClient.transaction.findMany({
-            where: {
-                authorId: authenticatedUserId
+            where,
+            orderBy: {
+                date: 'desc'
             }
         });
     }

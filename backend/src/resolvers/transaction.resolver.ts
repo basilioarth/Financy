@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Arg, UseMiddleware, FieldResolver, Root } from "type-graphql";
-import { TransactionInput } from "../dtos/transaction.dto";
+import { TransactionInput, TransactionFilters } from "../dtos/transaction.dto";
 import { IsAuth } from "../middlewares/auth.middleware";
 import { GqlUser } from "../graphql/decorators/user.decorator";
 import { User } from "@prisma/client";
@@ -54,9 +54,10 @@ export class TransactionResolver {
 
     @Query(() => [TransactionModel])
     async listTransactions(
-        @GqlUser() user: User
+        @GqlUser() user: User,
+        @Arg('filters', () => TransactionFilters, { nullable: true }) filters?: TransactionFilters
     ): Promise<TransactionModel[]> {
-        return this.transactionService.listTransactions(user.id);
+        return this.transactionService.listTransactions(user.id, filters);
     };
 
     @FieldResolver(() => CategoryModel)

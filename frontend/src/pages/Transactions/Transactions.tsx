@@ -17,16 +17,24 @@ import {
 import { CategoryIconContainer } from "../Categories/components/CategoryIconContainer";
 import { cn } from "@/lib/utils";
 import { TransactionDialog } from "./components/TransactionDialog";
-import { formatDate } from "@/utils/datesFormatter";
+import { formatDate, formatPeriod } from "@/utils/datesFormatter";
 import { LIST_ALL_CATEGORIES } from "@/lib/graphql/queries/Category";
 import { DeleteDialog } from "@/components/DeleteDialog";
 import { apolloClient } from "@/lib/graphql/apollo";
 import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transaction";
 import { formatCurrencyValue } from "@/utils/currencyFormatter";
-import { format } from 'date-fns';
-import { ptBR } from "date-fns/locale";
 import { TransactionFilters } from "./components/TransactionFilters";
 import { useQueryStates, parseAsString } from 'nuqs';
+import { NotFound } from "@/components/NotFound";
+
+
+interface ListTransactionsVariables {
+    description?: string | null;
+    type?: string | null;
+    categoryId?: string | null;
+    month?: number | null;
+    year?: number | null;
+}
 
 export function Transactions() {
     const [searchParams] = useQueryStates({
@@ -38,29 +46,42 @@ export function Transactions() {
     const { description, type, category, period } = searchParams;
 
     const handleGqlResponse = useGqlResponseHandler();
-    const [dateFilter, setDateFilter] = useState<Date>();
-
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [listAllTransactions, { }] = useLazyQuery<{ listTransactions: Transaction[] }>(
+    const [listAllTransactions, { }] = useLazyQuery<{ listTransactions: Transaction[] }, { filters: ListTransactionsVariables }>(
         LIST_ALL_TRANSACTIONS, { fetchPolicy: "network-only" }
     );
     const [listAllCategories, { }] = useLazyQuery<{ listCategories: Category[] }>(
         LIST_ALL_CATEGORIES, { fetchPolicy: "network-only" }
     );
 
-    const handleChangePeriodFilter = (date: Date) => {
-        setDateFilter(date);
-        const formattedDateToPeriod = format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
+    const getCategoryIdByName = (categoryName: string) => {
+        if (categoryName) {
+            return availableCategories.filter((category) => category.title == categoryName)[0].id
+        }
+        return undefined
     }
 
     const fetchTransactions = async () => {
         setLoading(true);
 
+        let categoryId = getCategoryIdByName(category);
+        let { month, year } = formatPeriod(period);
+
         try {
-            const result = await listAllTransactions();
+            const result = await listAllTransactions({
+                variables: {
+                    filters: {
+                        description: description || null,
+                        type: type || null,
+                        categoryId: categoryId || null,
+                        month: month || null,
+                        year: year || null
+                    },
+                }
+            });
 
             if (result.error) {
                 throw result.error
@@ -125,11 +146,6 @@ export function Transactions() {
 
     useEffect(() => {
         fetchTransactions()
-        console.log("Filtros atualizados:")
-        console.log(`Description: ${description}`)
-        console.log(`Type: ${type}`)
-        console.log(`Category: ${category}`)
-        console.log(`Period: ${period}`)
     }, [description, type, category, period])
 
     return (
@@ -232,6 +248,9 @@ export function Transactions() {
                         }
                     </TableBody>
                 </Table>
+            }
+            {transactions.length === 0 &&
+                <NotFound message="Nenhuma transação encontrada." />
             }
         </div>
     )

@@ -60,12 +60,20 @@ type Query {
   getTransaction(id: String!): TransactionModel!
   getUser(email: String!): UserModel!
   listCategories: [CategoryModel!]!
-  listTransactions: [TransactionModel!]!
+  listTransactions(filters: TransactionFilters): [TransactionModel!]!
   listUsers: [UserModel!]!
 }
 
 input RefreshAuthInput {
   refreshToken: String!
+}
+
+input TransactionFilters {
+  categoryId: String
+  description: String
+  month: Float
+  type: String
+  year: Float
 }
 
 input TransactionInput {

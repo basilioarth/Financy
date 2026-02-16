@@ -12,6 +12,7 @@ interface TransactionFiltersProps {
 
 export const TransactionFilters = ({ availableCategories }: TransactionFiltersProps) => {
     const [localDescription, setLocalDescription] = useState('');
+    const [localDate, setLocalDate] = useState(new Date())
 
     const [descriptionFilter, setDescriptionFilter] = useQueryState('description', parseAsString.withDefault(''))
     const [typeFilter, setTypeFilter] = useQueryState('type', parseAsString.withDefault(''))
@@ -19,6 +20,8 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
     const [periodFilter, setPeriodFilter] = useQueryState('period', parseAsString.withDefault(''))
 
     const handleChangePeriodFilter = (date: Date) => {
+        setLocalDate(date);
+
         const formattedDateToPeriod = format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
         setPeriodFilter(formattedDateToPeriod);
     }
@@ -88,7 +91,7 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
                         placeholder="Todos"
                         value={periodFilter}
                         disabled={false}
-                        date={new Date()}
+                        date={localDate}
                         mode="month-year"
                         hasSelectionChavron={true}
                         onChangeValue={(value) => { value instanceof Date && handleChangePeriodFilter(value) }}

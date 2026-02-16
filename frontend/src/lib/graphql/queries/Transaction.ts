@@ -1,26 +1,26 @@
 import { gql } from "@apollo/client";
 
 export const LIST_ALL_TRANSACTIONS = gql`
-query ListAllTransactions{
-  listTransactions {
-    id
-    type
-    description
-    date
-    value
-    category {
+  query ListAllTransactions($filters: TransactionFilters) {
+    listTransactions(filters: $filters) {
       id
-      title
+      type
       description
-      color
-      iconName
-    }
-    createdAt
-    updatedAt
-    author {
-      fullName
-      email
+      date
+      value
+      category {
+        id
+        title
+        description
+        color
+        iconName
+      }
+      createdAt
+      updatedAt
+      author {
+        fullName
+        email
+      }
     }
   }
-}
 `
