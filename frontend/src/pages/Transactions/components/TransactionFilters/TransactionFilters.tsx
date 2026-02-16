@@ -19,11 +19,15 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
     const [categoryFilter, setCategoryFilter] = useQueryState('category', parseAsString.withDefault(''))
     const [periodFilter, setPeriodFilter] = useQueryState('period', parseAsString.withDefault(''))
 
-    const handleChangePeriodFilter = (date: Date) => {
-        setLocalDate(date);
+    const handleChangePeriodFilter = (date: Date | string) => {
+        if (date instanceof Date) {
+            setLocalDate(date);
 
-        const formattedDateToPeriod = format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
-        setPeriodFilter(formattedDateToPeriod);
+            const formattedDateToPeriod = format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
+            setPeriodFilter(formattedDateToPeriod);
+        } else {
+            setPeriodFilter("");
+        }
     }
 
     useEffect(() => {
@@ -47,7 +51,7 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
     return (
         <div className="grid grid-cols-4 px-6 pt-5 pb-6 gap-4 bg-white border-[1px] border-gray-200 rounded-xl">
             <FormField.Container>
-                <FormField.Label label="Buscar" error="" />
+                <FormField.Label label="Buscar" error="" hasCleanOption={true} handleClearInput={() => setLocalDescription("")} />
                 <FormField.Content>
                     <FormField.Icon icon={Search} error="" />
                     <FormField.GenericInput
@@ -61,7 +65,7 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
                 </FormField.Content>
             </FormField.Container>
             <FormField.Container>
-                <FormField.Label label="Tipo" error="" />
+                <FormField.Label label="Tipo" error="" hasCleanOption={true} handleClearInput={() => setTypeFilter("")} />
                 <FormField.Content>
                     <FormField.DropDownInput
                         placeholder="Todos"
@@ -73,7 +77,7 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
                 </FormField.Content>
             </FormField.Container>
             <FormField.Container>
-                <FormField.Label label="Categoria" error="" />
+                <FormField.Label label="Categoria" error="" hasCleanOption={true} handleClearInput={() => setCategoryFilter("")} />
                 <FormField.Content>
                     <FormField.DropDownInput
                         placeholder="Todas"
@@ -85,7 +89,7 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
                 </FormField.Content>
             </FormField.Container>
             <FormField.Container>
-                <FormField.Label label="Período" error="" />
+                <FormField.Label label="Período" error="" hasCleanOption={true} handleClearInput={() => handleChangePeriodFilter("")} />
                 <FormField.Content>
                     <FormField.DateInput
                         placeholder="Todos"
