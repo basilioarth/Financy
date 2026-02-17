@@ -15,6 +15,8 @@ query ListAllCategories {
     }
     transactions {
       id
+      type
+      value
     }
   }
 }

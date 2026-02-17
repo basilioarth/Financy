@@ -46,3 +46,15 @@ export class PaginatedTransactions {
     @Field(() => Number)
     totalCount!: number
 }
+
+@ObjectType()
+export class BigNumbers {
+    @Field(() => Number)
+    totalBalance!: number
+
+    @Field(() => Number)
+    monthRecipes!: number
+
+    @Field(() => Number)
+    monthExpenses!: number
+}

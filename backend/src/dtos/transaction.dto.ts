@@ -41,3 +41,12 @@ export class TransactionFilters {
     @Field(() => Number, { nullable: true })
     limit?: number
 }
+
+@InputType()
+export class BigNumbersInput {
+    @Field(() => Number)
+    month: number
+
+    @Field(() => Number)
+    year: number
+}

@@ -1,10 +1,9 @@
 import { FormField } from "@/components/FormField"
 import { Search } from "lucide-react"
 import { useQueryState, parseAsString } from "nuqs"
-import { format } from 'date-fns';
-import { ptBR } from "date-fns/locale";
 import { Category } from "@/types";
 import { useEffect, useState } from "react";
+import { transformDateToPeriod } from "@/utils/datesFormatter";
 
 interface TransactionFiltersProps {
     availableCategories: Category[]
@@ -23,7 +22,7 @@ export const TransactionFilters = ({ availableCategories }: TransactionFiltersPr
         if (date instanceof Date) {
             setLocalDate(date);
 
-            const formattedDateToPeriod = format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
+            const formattedDateToPeriod = transformDateToPeriod(date);
             setPeriodFilter(formattedDateToPeriod);
         } else {
             setPeriodFilter("");

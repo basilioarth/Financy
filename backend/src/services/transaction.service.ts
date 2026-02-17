@@ -78,6 +78,89 @@ export class TransactionService {
         };
     }
 
+    async listRecentTransactions(
+        authenticatedUserId: string
+    ) {
+        const limit = 5;
+
+        const recentTransactions = await prismaClient.transaction.findMany({
+            where: {
+                authorId: authenticatedUserId
+            },
+            take: limit,
+            orderBy: {
+                date: 'desc'
+            }
+        });
+
+        return recentTransactions;
+    }
+
+    async getBigNumbers(
+        authenticatedUserId: string,
+        month: number,
+        year: number
+    ) {
+        // Data de início: primeiro dia do mês às 00:00:00
+        const startDate = new Date(year, month - 1, 1);
+
+        // Data de fim: primeiro dia do próximo mês às 00:00:00
+        const endDate = new Date(year, month, 1);
+
+        const [totalRecipes, totalExpenses, monthRecipes, monthExpenses] = await Promise.all([
+            prismaClient.transaction.aggregate({
+                _sum: {
+                    value: true
+                },
+                where: {
+                    authorId: authenticatedUserId,
+                    type: "Entrada"
+                }
+            }),
+            prismaClient.transaction.aggregate({
+                _sum: {
+                    value: true
+                },
+                where: {
+                    authorId: authenticatedUserId,
+                    type: "Saída"
+                }
+            }),
+            prismaClient.transaction.aggregate({
+                _sum: {
+                    value: true
+                },
+                where: {
+                    authorId: authenticatedUserId,
+                    type: "Entrada",
+                    date: {
+                        gte: startDate, // Maior ou igual à data de início
+                        lt: endDate     // Menor que a data de fim
+                    }
+                }
+            }),
+            prismaClient.transaction.aggregate({
+                _sum: {
+                    value: true
+                },
+                where: {
+                    authorId: authenticatedUserId,
+                    type: "Saída",
+                    date: {
+                        gte: startDate, // Maior ou igual à data de início
+                        lt: endDate     // Menor que a data de fim
+                    }
+                }
+            })
+        ]);
+
+        return {
+            totalBalance: ((totalRecipes._sum.value ?? 0) - (totalExpenses._sum.value ?? 0)),
+            monthRecipes: monthRecipes._sum.value ?? 0,
+            monthExpenses: monthExpenses._sum.value ?? 0
+        }
+    }
+
     async getTransactionById(id: string, authenticatedUserId: string) {
         const transaction = await prismaClient.transaction.findUnique({
             where: {

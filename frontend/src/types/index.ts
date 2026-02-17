@@ -64,3 +64,9 @@ export interface CategoryInput {
     iconName: string,
     color: string
 }
+
+export interface BigNumbers {
+    totalBalance: number
+    monthRecipes: number
+    monthExpenses: number
+}

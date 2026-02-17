@@ -1,11 +1,11 @@
 import { Resolver, Query, Mutation, Arg, UseMiddleware, FieldResolver, Root } from "type-graphql";
-import { TransactionInput, TransactionFilters } from "../dtos/transaction.dto";
+import { TransactionInput, TransactionFilters, BigNumbersInput } from "../dtos/transaction.dto";
 import { IsAuth } from "../middlewares/auth.middleware";
 import { GqlUser } from "../graphql/decorators/user.decorator";
 import { User } from "@prisma/client";
 import { UserModel } from "../models/user.model";
 import { UserService } from "../services/user.service";
-import { TransactionModel, PaginatedTransactions } from "../models/transaction.model";
+import { TransactionModel, PaginatedTransactions, BigNumbers } from "../models/transaction.model";
 import { TransactionService } from "../services/transaction.service";
 import { CategoryModel } from "../models/category.model";
 import { CategoryService } from "../services/category.service";
@@ -59,6 +59,21 @@ export class TransactionResolver {
     ): Promise<PaginatedTransactions> {
         return this.transactionService.listTransactions(user.id, filters || {});
     };
+
+    @Query(() => [TransactionModel])
+    async listRecentTransactions(
+        @GqlUser() user: User
+    ): Promise<TransactionModel[]> {
+        return this.transactionService.listRecentTransactions(user.id);
+    };
+
+    @Query(() => BigNumbers)
+    async getBigNumbers(
+        @GqlUser() user: User,
+        @Arg('data', () => BigNumbersInput) data: BigNumbersInput
+    ): Promise<BigNumbers> {
+        return this.transactionService.getBigNumbers(user.id, data.month, data.year)
+    }
 
     @FieldResolver(() => CategoryModel)
     async category(@Root() transaction: TransactionModel, @GqlUser() user: User): Promise<CategoryModel> {

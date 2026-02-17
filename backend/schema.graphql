@@ -14,6 +14,17 @@ type AuthOutput {
   user: UserModel!
 }
 
+type BigNumbers {
+  monthExpenses: Float!
+  monthRecipes: Float!
+  totalBalance: Float!
+}
+
+input BigNumbersInput {
+  month: Float!
+  year: Float!
+}
+
 input CategoryInput {
   color: String!
   description: String!
@@ -61,10 +72,12 @@ type PaginatedTransactions {
 }
 
 type Query {
+  getBigNumbers(data: BigNumbersInput!): BigNumbers!
   getCategory(id: String!): CategoryModel!
   getTransaction(id: String!): TransactionModel!
   getUser(email: String!): UserModel!
   listCategories: [CategoryModel!]!
+  listRecentTransactions: [TransactionModel!]!
   listTransactions(filters: TransactionFilters): PaginatedTransactions!
   listUsers: [UserModel!]!
 }

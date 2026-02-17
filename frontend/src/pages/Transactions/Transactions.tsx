@@ -183,7 +183,7 @@ export function Transactions() {
             {transactions.length !== 0 &&
                 <Table>
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="uppercase">
                             <TableHead className="text-left pl-6">Descrição</TableHead>
                             <TableHead>Data</TableHead>
                             <TableHead>Categoria</TableHead>
@@ -236,7 +236,7 @@ export function Transactions() {
                                         {transaction.type}
                                     </TableCell>
                                     <TableCell className="text-right text-sm font-semibold text-gray-800">
-                                        {transaction.type == "Saída" ? `- ${formatCurrencyValue(transaction.value)}` : formatCurrencyValue(transaction.value)}
+                                        {transaction.type == "Saída" ? `- ${formatCurrencyValue(transaction.value)}` : `+ ${formatCurrencyValue(transaction.value)}`}
                                     </TableCell>
                                     <TableCell className="text-right pr-6 flex justify-end items-center gap-2">
                                         <DeleteDialog

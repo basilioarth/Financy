@@ -8,6 +8,10 @@ export const formatDate = (originalDate: string, yearsFormat: string): string =>
     return formattedDate
 }
 
+export const transformDateToPeriod = (date: Date): string => {
+    return format(date, "LLLL '/' yyyy", { locale: ptBR }).replace(/^(.)/, c => c.toUpperCase());
+}
+
 export const formatPeriod = (period: string) => {
     let month = undefined
     let year = undefined
