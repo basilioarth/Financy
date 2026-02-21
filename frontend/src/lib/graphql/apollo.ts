@@ -2,8 +2,10 @@ import { ApolloClient, HttpLink, ApolloLink, InMemoryCache } from "@apollo/clien
 import { SetContextLink } from "@apollo/client/link/context"
 import { useAuthStore } from '@/stores/auth'
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL
+
 const httpLink = new HttpLink({
-    uri: "http://localhost:4000/graphql"
+    uri: backendUrl
 })
 
 const authLink = new SetContextLink((prevContext) => {
