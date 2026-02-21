@@ -152,7 +152,7 @@ export function Dashboard() {
                     icon={Wallet}
                     iconColor="purple-base"
                     title="saldo total"
-                    value={bigNumbers.totalBalance >= 0 ? `${formatCurrencyValue(bigNumbers.totalBalance)}` : `- ${formatCurrencyValue(bigNumbers.totalBalance)}`}
+                    value={formatCurrencyValue(bigNumbers.totalBalance)}
                     loading={loading}
                 />
                 <BigNumbersCard
