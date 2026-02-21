@@ -36,7 +36,7 @@ export function CategoryCard({ category, refetch }: CategoryCardProps) {
             refetch();
         } catch (error) {
             console.error(error);
-            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => deleteCategory() })
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: deleteCategory })
         }
     }
 

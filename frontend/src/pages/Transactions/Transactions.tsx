@@ -76,6 +76,27 @@ export function Transactions() {
         return undefined
     }
 
+    const fetchCategories = async () => {
+        setLoading(true);
+
+        try {
+            const result = await listAllCategories();
+
+            if (result.error) {
+                throw result.error
+            }
+
+            if (result.data) {
+                setAvailableCategories(result.data.listCategories)
+            }
+        } catch (err) {
+            console.error(err);
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchData });
+        }
+
+        setLoading(false);
+    }
+
     const fetchTransactions = async () => {
         setLoading(true);
 
@@ -107,28 +128,7 @@ export function Transactions() {
             }
         } catch (err) {
             console.error(err);
-            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchTransactions });
-        }
-
-        setLoading(false);
-    }
-
-    const fetchCategories = async () => {
-        setLoading(true);
-
-        try {
-            const result = await listAllCategories();
-
-            if (result.error) {
-                throw result.error
-            }
-
-            if (result.data) {
-                setAvailableCategories(result.data.listCategories)
-            }
-        } catch (err) {
-            console.error(err);
-            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchCategories });
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchData });
         }
 
         setLoading(false);
@@ -153,6 +153,11 @@ export function Transactions() {
         }
 
         setLoading(false);
+    }
+
+    const fetchData = () => {
+        fetchCategories()
+        fetchTransactions()
     }
 
     useEffect(() => {

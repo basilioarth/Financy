@@ -23,7 +23,7 @@ export function Profile() {
                 handleGqlResponse({ type: "success", message: "Usuário atualizado com sucesso!", callBack: () => { } })
             }
         } catch (error: any) {
-            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => { } })
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: handleUpdateUserInfos })
         }
     }
 

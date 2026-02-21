@@ -136,7 +136,7 @@ export function TransactionDialog({ transaction, availableCategories, children, 
             refetch();
         } catch (error) {
             console.error(error);
-            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleSubmit() })
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: handleSubmit })
         }
 
         setLoading(false);

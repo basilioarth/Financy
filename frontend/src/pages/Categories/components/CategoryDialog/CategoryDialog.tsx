@@ -116,7 +116,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
             refetch();
         } catch (error) {
             console.error(error);
-            handleGqlResponse({ type: "error", message: `${error}`, callBack: () => handleSubmit() })
+            handleGqlResponse({ type: "error", message: `${error}`, callBack: handleSubmit })
         }
 
         setLoading(false);

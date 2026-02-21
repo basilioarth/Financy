@@ -93,7 +93,7 @@ export function Dashboard() {
             }
         } catch (err) {
             console.error(err);
-            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchRecentTransactions });
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchDashBoardDatas });
         }
 
         setLoading(false);
@@ -116,7 +116,7 @@ export function Dashboard() {
             }
         } catch (err) {
             console.error(err);
-            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchRecentTransactions });
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchDashBoardDatas });
         }
 
         setLoading(false);
@@ -137,7 +137,7 @@ export function Dashboard() {
             }
         } catch (err) {
             console.error(err);
-            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchCategories });
+            handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchDashBoardDatas });
         }
 
         setLoading(false);
