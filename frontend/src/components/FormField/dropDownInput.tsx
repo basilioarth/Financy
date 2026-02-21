@@ -36,7 +36,7 @@ export const FormFieldDropDownInput = ({ placeholder, value, disabled, options, 
             </button>
             {showingOptions &&
                 <div className="absolute w-full bg-white rounded-xl max-h-[200px] overflow-y-auto overflow-x-clip z-50">
-                    {
+                    {options.length > 0 &&
                         options.map((option) => (
                             <div
                                 key={option}
@@ -46,6 +46,13 @@ export const FormFieldDropDownInput = ({ placeholder, value, disabled, options, 
                                 <span>{option}</span>
                             </div>
                         ))
+                    }
+                    {options.length == 0 &&
+                        <div
+                            className="flex flex-start items-center p-4 m-0 font-inter text-base text-gray-500 italic"
+                        >
+                            <span>Nenhuma opção disponível</span>
+                        </div>
                     }
                 </div>
             }
