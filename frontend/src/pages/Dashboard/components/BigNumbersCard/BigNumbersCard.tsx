@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/Skeleton";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react"
 
@@ -5,10 +6,11 @@ interface BigNumbersCardProps {
     icon: LucideIcon,
     iconColor: string,
     title: string,
-    value: string
+    value: string,
+    loading: boolean
 }
 
-export const BigNumbersCard = ({ icon: Icon, iconColor, title, value }: BigNumbersCardProps) => {
+export const BigNumbersCard = ({ icon: Icon, iconColor, title, value, loading }: BigNumbersCardProps) => {
     const iconBackground = `text-${iconColor}`;
 
     return (
@@ -20,7 +22,7 @@ export const BigNumbersCard = ({ icon: Icon, iconColor, title, value }: BigNumbe
                 )} />
                 <span className="text-xs font-medium text-gray-500 uppercase">{title}</span>
             </div>
-            <span className="text-[28px] leading-8 font-bold text-gray-800 uppercase">{value}</span>
+            <span className="text-[28px] leading-8 font-bold text-gray-800 uppercase">{loading ? <Skeleton className="w-[120px] h-8" /> : value}</span>
         </div>
     )
 }

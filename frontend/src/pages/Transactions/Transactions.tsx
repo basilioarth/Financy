@@ -28,6 +28,7 @@ import { TransactionFilters } from "./components/TransactionFilters";
 import { useQueryStates, parseAsString, parseAsInteger } from 'nuqs';
 import { NotFound } from "@/components/NotFound";
 import { Pagination } from "@/components/ui/pagination";
+import { Loading } from "@/components/Loading";
 
 
 interface ListTransactionsVariables {
@@ -77,8 +78,6 @@ export function Transactions() {
     }
 
     const fetchCategories = async () => {
-        setLoading(true);
-
         try {
             const result = await listAllCategories();
 
@@ -93,13 +92,9 @@ export function Transactions() {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchData });
         }
-
-        setLoading(false);
     }
 
     const fetchTransactions = async () => {
-        setLoading(true);
-
         let categoryId = getCategoryIdByName(category);
         let { month, year } = formatPeriod(period);
 
@@ -130,8 +125,6 @@ export function Transactions() {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchData });
         }
-
-        setLoading(false);
     }
 
     const handleDeleteTransaction = async (id: string) => {
@@ -156,16 +149,16 @@ export function Transactions() {
     }
 
     const fetchData = () => {
+        setLoading(true);
+
         fetchCategories()
         fetchTransactions()
+
+        setLoading(false)
     }
 
     useEffect(() => {
-        fetchCategories()
-    }, [])
-
-    useEffect(() => {
-        fetchTransactions()
+        fetchData()
     }, [description, type, category, period, page])
 
     return (
@@ -198,7 +191,7 @@ export function Transactions() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {
+                        {(transactions.length > 0 && !loading) &&
                             transactions.map((transaction) => (
                                 <TableRow key={transaction.id}>
                                     <TableCell className="text-left pl-6 text-base font-medium text-gray-800 flex justify-start items-center gap-4">
@@ -285,8 +278,11 @@ export function Transactions() {
                     )}
                 </Table>
             }
-            {transactions.length === 0 &&
-                <NotFound message="Nenhuma transação encontrada." />
+            {(transactions.length === 0 && !loading) &&
+                <NotFound message="Nenhuma transação encontrada" />
+            }
+            {loading &&
+                <Loading />
             }
         </div>
     )

@@ -10,9 +10,11 @@ import { CategoryCard } from "./components/CategoryCard"
 import { useGqlResponseHandler } from "@/hooks/useGqlResponseHandler"
 import { NotFound } from "@/components/NotFound"
 import { CategoryDialog } from "./components/CategoryDialog"
+import { Loading } from "@/components/Loading"
 
 export function Categories() {
     const handleGqlResponse = useGqlResponseHandler();
+    const [loading, setLoading] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>([])
     const [mostUsedCategory, setMostUsedCategory] = useState<Category>({ id: "", title: "Nenhuma", code: "", author: { email: "", fullName: "" }, color: "", description: "", iconName: "undefined", transactions: [] });
     const [listAllCategories, { }] = useLazyQuery<{ listCategories: Category[] }>(
@@ -38,6 +40,8 @@ export function Categories() {
     }
 
     const fetchCategories = async () => {
+        setLoading(true);
+
         try {
             const result = await listAllCategories();
 
@@ -53,6 +57,8 @@ export function Categories() {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchCategories });
         }
+
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -80,22 +86,25 @@ export function Categories() {
                     iconColor="text-gray-700"
                     title={`${categories.length}`}
                     description="total de categorias"
+                    loading={loading}
                 />
                 <LabelCard
                     icon={ArrowUpDown}
                     iconColor="text-purple-base"
                     title={`${countTotalTransactionsAmount()}`}
                     description="total de transações"
+                    loading={loading}
                 />
                 <LabelCard
                     icon={getIconByName(mostUsedCategory.iconName)}
                     iconColor={mostUsedCategory.color === "" ? "text-gray-400" : `text-${mostUsedCategory.color}-base`}
                     title={mostUsedCategory.title}
                     description="categoria mais utilizada"
+                    loading={loading}
                 />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {
+                {(categories.length != 0 && !loading) &&
                     categories.map((category) => (
                         <CategoryCard
                             key={category.id}
@@ -105,9 +114,12 @@ export function Categories() {
                     ))
                 }
             </div>
-            {categories.length === 0 && (
+            {(categories.length === 0 && !loading) &&
                 <NotFound message="Nenhuma categoria encontrada" />
-            )}
+            }
+            {loading &&
+                <Loading />
+            }
         </div>
     )
 }

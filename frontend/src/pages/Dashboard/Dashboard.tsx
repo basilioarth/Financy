@@ -1,4 +1,4 @@
-import { ChevronRight, CircleArrowDown, CircleArrowUp, Plus, Wallet } from "lucide-react";
+import { ChevronRight, CircleArrowDown, CircleArrowUp, Loader, Plus, Wallet } from "lucide-react";
 import { BigNumbersCard } from "./components/BigNumbersCard";
 import {
     Table,
@@ -69,8 +69,6 @@ export function Dashboard() {
     }
 
     const fetchBigNumbers = async () => {
-        setLoading(true);
-
         try {
             let currentDate = new Date();
             let currentPeriod = transformDateToPeriod(currentDate);
@@ -95,13 +93,9 @@ export function Dashboard() {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchDashBoardDatas });
         }
-
-        setLoading(false);
     }
 
     const fetchRecentTransactions = async () => {
-        setLoading(true);
-
         try {
             const result = await listRecentTransactions();
 
@@ -118,13 +112,9 @@ export function Dashboard() {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchDashBoardDatas });
         }
-
-        setLoading(false);
     }
 
     const fetchCategories = async () => {
-        setLoading(true);
-
         try {
             const result = await listAllCategories();
 
@@ -139,14 +129,16 @@ export function Dashboard() {
             console.error(err);
             handleGqlResponse({ type: "error", message: `${err}`, callBack: fetchDashBoardDatas });
         }
-
-        setLoading(false);
     }
 
     const fetchDashBoardDatas = async () => {
+        setLoading(true)
+
         fetchBigNumbers()
         fetchRecentTransactions()
         fetchCategories()
+
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -161,18 +153,21 @@ export function Dashboard() {
                     iconColor="purple-base"
                     title="saldo total"
                     value={bigNumbers.totalBalance >= 0 ? `${formatCurrencyValue(bigNumbers.totalBalance)}` : `- ${formatCurrencyValue(bigNumbers.totalBalance)}`}
+                    loading={loading}
                 />
                 <BigNumbersCard
                     icon={CircleArrowUp}
                     iconColor="brand-base"
                     title="receitas do mês"
                     value={`${formatCurrencyValue(bigNumbers.monthRecipes)}`}
+                    loading={loading}
                 />
                 <BigNumbersCard
                     icon={CircleArrowDown}
                     iconColor="red-base"
                     title="despesas do mês"
                     value={`${formatCurrencyValue(bigNumbers.monthExpenses)}`}
+                    loading={loading}
                 />
             </div>
             <div className="grid grid-cols-3 gap-6">
@@ -190,7 +185,7 @@ export function Dashboard() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {
+                            {(recentTransactions.length > 0 && !loading) &&
                                 recentTransactions.map((transaction) => (
                                     <TableRow key={transaction.id}>
                                         <TableCell className="text-left pl-6 flex justify-start items-center gap-4">
@@ -237,6 +232,22 @@ export function Dashboard() {
                                     </TableRow>
                                 ))
                             }
+                            {(recentTransactions.length === 0 && !loading) &&
+                                <TableRow>
+                                    <TableCell colSpan={3}>
+                                        <span className="text-sm font-medium text-gray-500 italic">Nenhuma transação encontrada</span>
+                                    </TableCell>
+                                </TableRow>
+                            }
+                            {loading &&
+                                <TableRow>
+                                    <TableCell colSpan={3} className="relative py-7">
+                                        <span className="text-sm font-medium text-gray-500 absolute top-1/2 left-1/2 -translate-y-1/2">
+                                            <Loader className="h-5 text-gray-400 animate-spin" />
+                                        </span>
+                                    </TableCell>
+                                </TableRow>
+                            }
                         </TableBody>
                         <TransactionDialog
                             availableCategories={categories}
@@ -270,7 +281,7 @@ export function Dashboard() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {
+                            {(categories.length != 0 && !loading) &&
                                 categories.map((category) => (
                                     <TableRow key={category.id}>
                                         <TableCell className="text-left pl-6 flex justify-start items-center gap-4">
@@ -294,6 +305,22 @@ export function Dashboard() {
                                         </TableCell>
                                     </TableRow>
                                 ))
+                            }
+                            {(categories.length == 0 && !loading) &&
+                                <TableRow>
+                                    <TableCell colSpan={3}>
+                                        <span className="text-sm font-medium text-gray-500 italic">Nenhuma categoria encontrada</span>
+                                    </TableCell>
+                                </TableRow>
+                            }
+                            {loading &&
+                                <TableRow>
+                                    <TableCell colSpan={3} className="relative py-7">
+                                        <span className="text-sm font-medium text-gray-500 absolute top-1/2 left-1/2 -translate-y-1/2">
+                                            <Loader className="h-5 text-gray-400 animate-spin" />
+                                        </span>
+                                    </TableCell>
+                                </TableRow>
                             }
                         </TableBody>
                     </Table>

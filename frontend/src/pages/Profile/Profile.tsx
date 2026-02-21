@@ -15,6 +15,8 @@ export function Profile() {
     const handleGqlResponse = useGqlResponseHandler();
 
     const handleUpdateUserInfos = async () => {
+        setLoading(true);
+
         try {
             const updateUserMutate = await updateUser({
                 fullName: fullName
@@ -25,14 +27,12 @@ export function Profile() {
         } catch (error: any) {
             handleGqlResponse({ type: "error", message: `${error}`, callBack: handleUpdateUserInfos })
         }
+
+        setLoading(false);
     }
 
     const handleLogout = () => {
-        setLoading(true);
-
         logout()
-
-        setLoading(false);
     }
 
     return (
