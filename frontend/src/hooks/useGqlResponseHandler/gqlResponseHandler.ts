@@ -41,6 +41,11 @@ export const useGqlResponseHandler = () => {
                     } finally {
                         isRefreshing.current = false;
                     }
+                } else if (message.includes("Foreign key constraint violated on the foreign key")) {
+                    toast.error(
+                        "A categoria não pôde ser excluída porque existem transações relacionadas a ela. Por favor, mude a categoria dessas transações e tente novamente.",
+                        { position: "bottom-center" }
+                    )
                 } else if (!message.includes("The operation was aborted")) {
                     toast.error(message, { position: "bottom-center" })
                 }
