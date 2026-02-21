@@ -29,7 +29,7 @@ export function Categories() {
     }
 
     const calculeMostUsedCategory = (categories: Category[]) => {
-        let max = -1;
+        let max = 0;
 
         categories.forEach((category) => {
             if (category.transactions.length > max) {
