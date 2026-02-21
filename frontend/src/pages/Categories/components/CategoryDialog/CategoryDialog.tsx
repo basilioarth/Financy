@@ -122,6 +122,10 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
         setLoading(false);
     }
 
+    const isFormFullFilled = () => {
+        return (formData.title != "" && formData.iconName != "" && formData.color != "")
+    }
+
     useEffect(() => {
         if (isOpen && category) {
             setFormData({
@@ -141,7 +145,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
             <DialogContent className="font-inter">
                 <DialogHeader>
                     <DialogTitle>{category ? "Editar categoria" : "Nova categoria"}</DialogTitle>
-                    <DialogDescription>Organize suas transações com categorias</DialogDescription>
+                    <DialogDescription>{category ? "Edite os detalhes da sua categoria" : "Organize suas transações com categorias"}</DialogDescription>
                 </DialogHeader>
                 <FieldGroup className="gap-4">
                     <FormField.Container>
@@ -206,7 +210,7 @@ export const CategoryDialog = ({ category, children, refetch }: CategoryDialogPr
                     </div>
                 </div>
                 <DialogClose asChild>
-                    <Button onClick={() => handleSubmit()}>
+                    <Button onClick={() => handleSubmit()} disabled={!isFormFullFilled()}>
                         Salvar
                     </Button>
                 </DialogClose>

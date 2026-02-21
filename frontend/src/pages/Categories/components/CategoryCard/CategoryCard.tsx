@@ -53,8 +53,8 @@ export function CategoryCard({ category, refetch }: CategoryCardProps) {
                 />
                 <div className="w-fit h-fit flex justify-center items-center gap-2">
                     <DeleteDialog
-                        title={`Excluir categoria: ${category.title}`}
-                        description="Tem certeza de que quer excluir essa categoria? Esta ação não poderá ser desfeita!"
+                        title={"Excluir categoria"}
+                        description={`Tem certeza de que quer excluir a categoria "${category.title}"? Esta ação não poderá ser desfeita!`}
                         handleConfirmDeletion={deleteCategory}
                     >
                         <Button variant="iconButton" size="icon" className="text-danger">

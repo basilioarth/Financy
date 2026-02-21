@@ -39,6 +39,7 @@ export const FormFieldDropDownInput = ({ placeholder, value, disabled, options, 
                     {
                         options.map((option) => (
                             <div
+                                key={option}
                                 className="flex flex-start items-center p-4 m-0 font-inter text-base text-black hover:bg-gray-100 cursor-pointer"
                                 onClick={() => onChangeValue(option)}
                             >

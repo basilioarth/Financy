@@ -56,7 +56,7 @@ export function TransactionDialog({ transaction, availableCategories, children, 
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState<TransactionInput>({
-        type: "",
+        type: "Saída",
         description: "",
         date: new Date(),
         value: 0.0,
@@ -166,7 +166,7 @@ export function TransactionDialog({ transaction, availableCategories, children, 
             <DialogContent className="font-inter">
                 <DialogHeader>
                     <DialogTitle>{transaction ? "Editar trasação" : "Nova transação"}</DialogTitle>
-                    <DialogDescription>Registre sua despesa ou receita</DialogDescription>
+                    <DialogDescription>{transaction ? "Edite sua despesa ou receita" : "Registre sua despesa ou receita"}</DialogDescription>
                 </DialogHeader>
                 <div className="flex p-2 border-[1px] border-gray-200 rounded-xl w-full min-h-[62px] justify-between">
                     <Button

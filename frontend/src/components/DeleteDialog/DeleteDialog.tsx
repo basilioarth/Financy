@@ -26,7 +26,7 @@ export const DeleteDialog = ({ title, description, children, handleConfirmDeleti
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="font-inter">
+            <DialogContent className="font-inter gap-5">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>

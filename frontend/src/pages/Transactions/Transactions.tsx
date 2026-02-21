@@ -245,8 +245,8 @@ export function Transactions() {
                                     </TableCell>
                                     <TableCell className="text-right pr-6 flex justify-end items-center gap-2">
                                         <DeleteDialog
-                                            title={`Excluir transação: ${transaction.description}`}
-                                            description="Tem certeza de que quer excluir essa transação? Esta ação não poderá ser desfeita!"
+                                            title={"Excluir transação"}
+                                            description={`Tem certeza de que quer excluir a transação "${transaction.description}"? Esta ação não poderá ser desfeita!`}
                                             handleConfirmDeletion={() => handleDeleteTransaction(transaction.id)}
                                         >
                                             <Button variant="iconButton" size="icon" className="text-danger">
