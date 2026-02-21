@@ -41,7 +41,7 @@ async function bootstrap() {
     }));
 
     app.listen(4000, () => {
-        console.log('Servidor iniciado em http://localhost:4000/graphql');
+        console.info('Servidor iniciado em http://localhost:4000/graphql');
     });
 }
 

@@ -99,8 +99,6 @@ export function Dashboard() {
         try {
             const result = await listRecentTransactions();
 
-            console.log(result);
-
             if (result.error) {
                 throw result.error
             }

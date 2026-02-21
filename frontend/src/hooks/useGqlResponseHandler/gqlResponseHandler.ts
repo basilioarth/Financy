@@ -32,7 +32,6 @@ export const useGqlResponseHandler = () => {
                             throw new Error
                         }
 
-                        console.log("Callback chamada")
                         callBack()
                     } catch (error) {
                         console.error(`Erro ao fazer o refresh automático da autenticação: ${error}`)
